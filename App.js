@@ -25,6 +25,7 @@ import {
 
 import {LoadAllCities} from './Operations';
 import {countryData} from './cities';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const App = () => {
   const [allData, setAllData] = useState(countryData);
@@ -36,31 +37,12 @@ const App = () => {
     ContinentName: 'aa',
   });
   //holds the name selected of the capital city
-  const [selectedName, setSelectedName] = useState('Not selected');
-  const [allCities, setAllCities] = useState();
+  const [selectedCity, setSelectedCity] = useState('Not selected');
+  const [allCities, setAllCities] = useState(
+    allData.flatMap(item => item.CapitalName),
+  );
 
-  // useEffect(() => {
-  //   //Runs only on the first render with []
-
-  //   allData.map(() => {
-  //     setAllCities(CapitalName);
-  //   });
-
-  //   console.log('allCities', allCities);
-  // }, []);
-
-  const data = [
-    {CapitalName: 'Devin'},
-    {CapitalName: 'Dan'},
-    {CapitalName: 'Dominic'},
-    {CapitalName: 'Jackson'},
-    {CapitalName: 'James'},
-    {CapitalName: 'Joel'},
-    {CapitalName: 'John'},
-    {CapitalName: 'Jillian'},
-    {CapitalName: 'Jimmy'},
-    {CapitalName: 'Julie'},
-  ];
+  console.log('allcities', allCities);
 
   const [number, setNumber] = useState(0);
 
@@ -138,9 +120,7 @@ const App = () => {
       CapitalLongitude: selecteditem.CapitalLongitude,
       ContinentName: selecteditem.ContinentName,
     });
-    var cities = item.CapitalName;
-    //setAllCities(cities);
-    // });
+
     console.log('Random number', number);
     console.log('Country Data', allData[number]);
   };
@@ -151,22 +131,24 @@ const App = () => {
         style={styles.sectionTitle}
         title="Guess the Capital City"></Section>
       <Button title="New Country" onPress={onClickHandler}></Button>
-      {/* <FlatList
-        data={[data]}
-        renderItem={({item}) => (
-          <Text style={styles.item}>{item.CapitalName}</Text>
-        )} 
+
+      <SelectDropdown
+        data={allCities}
+        onSelect={(selectedItem, index) => {
+          console.log(selectedItem, index);
+        }}
+        buttonTextAfterSelection={(selectedItem, index) => {
+          setSelectedCity(selectedItem);
+          // text represented after item is selected
+          // if data array is an array of objects then return selectedItem.property to render after item is selected
+          //return selectedItem;
+        }}
+        rowTextForSelection={(item, index) => {
+          // text represented for each item in dropdown
+          // if data array is an array of objects then return item.property to represent item in dropdown
+          return item;
+        }}
       />
-      //https://github.com/lawnstarter/react-native-picker-select
-      <RNPickerSelect
-        onValueChange={value => console.log(value)}
-        items={[
-          {label: 'Football', value: 'football'},
-          {label: 'Baseball', value: 'baseball'},
-          {label: 'Hockey', value: 'hockey'},
-        ]}
-      />
-      */}
     </SafeAreaView>
   );
 };
