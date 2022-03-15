@@ -19,7 +19,9 @@ import {
   SectionList,
   Colors,
   Button,
+  FlatList,
 } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 
 import {LoadAllCities} from './Operations';
 import {countryData} from './cities';
@@ -33,14 +35,30 @@ const App = () => {
     CapitalLongitude: 0,
     ContinentName: 'aa',
   });
+  //holds the name selected of the capital city
+  const [selectedName, setSelectedName] = useState('Not selected');
+  const [allCities, setAllCities] = useState();
+
+  const data = [
+    {CapitalName: 'Devin'},
+    {CapitalName: 'Dan'},
+    {CapitalName: 'Dominic'},
+    {CapitalName: 'Jackson'},
+    {CapitalName: 'James'},
+    {CapitalName: 'Joel'},
+    {CapitalName: 'John'},
+    {CapitalName: 'Jillian'},
+    {CapitalName: 'Jimmy'},
+    {CapitalName: 'Julie'},
+  ];
 
   const [number, setNumber] = useState(0);
 
   const increase = () => {
     var datalength = allData.length;
-    var randomNumber = getRandomNumberBetween(0, datalength);
-
-    number == 14 ? setNumber(1) : setNumber(number + 1);
+    var randomNumber = getRandomNumberBetween(0, 20);
+    setNumber(randomNumber);
+    // number == 14 ? setNumber(1) : setNumber(number + 1);
   };
 
   const getRandomNumberBetween = (min, max) => {
@@ -54,7 +72,7 @@ const App = () => {
           {title} {number}
         </Text>
         <Text>
-          the city is {gameData.CapitalName ? gameData.CapitalName : ''}{' '}
+          the city is {gameData.CapitalName ? gameData.CapitalName : ''}
         </Text>
         <Text>
           the Country is {gameData.CountryName ? gameData.CountryName : ''}
@@ -110,6 +128,8 @@ const App = () => {
         CapitalLongitude: selecteditem.CapitalLongitude,
         ContinentName: selecteditem.ContinentName,
       });
+      var cities = item.CapitalName;
+      //setAllCities(cities);
     });
   };
 
@@ -118,8 +138,22 @@ const App = () => {
       <Section
         style={styles.sectionTitle}
         title="Guess the Capital City"></Section>
-
       <Button title="New Country" onPress={onClickHandler}></Button>
+      <FlatList
+        data={[data]}
+        renderItem={({item}) => (
+          <Text style={styles.item}>{item.CapitalName}</Text>
+        )}
+      />
+      //https://github.com/lawnstarter/react-native-picker-select
+      <RNPickerSelect
+        onValueChange={value => console.log(value)}
+        items={[
+          {label: 'Football', value: 'football'},
+          {label: 'Baseball', value: 'baseball'},
+          {label: 'Hockey', value: 'hockey'},
+        ]}
+      />
     </SafeAreaView>
   );
 };
