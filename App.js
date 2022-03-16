@@ -5,8 +5,8 @@
  * @format
  * @flow strict-local
  */
-
-import React, {useState, useEffect} from 'react';
+//https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
+import React, {useState, useEffect, useRef} from 'react';
 // import type {Node} from 'react';
 import {
   SafeAreaView,
@@ -28,7 +28,7 @@ import {countryDataSmall} from './citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 
 const App = () => {
-  const [allData, setAllData] = useState(countryDataSmall); //all the data of the countries
+  const [allData, setAllData] = useState([]); //all the data of the countries
   const [gameData, setGameData] = useState({
     CountryName: 'aa',
     CapitalName: 'aa',
@@ -37,15 +37,17 @@ const App = () => {
     ContinentName: 'aa',
   }); //holds the selected country details
 
-  const [selectedCity, setSelectedCity] = useState('Not selected'); //selected city
+  const [selectedCity, setSelectedCity] = useState(null); //selected city
   const [allCities, setAllCities] = useState(['fake', 'fake2']); //dropdown data
   const [number, setNumber] = useState(0); //random number
   const [winLose, setWinLose] = useState('false');
+  const citiesDropdownRef = useRef();
 
   //this run only at the initial stage, AFTER the dom has loaded ,[] at the end makes it run once
   useEffect(() => {
     //https://javascript.plainenglish.io/what-is-the-equivalent-of-the-componentdidmount-method-in-a-react-function-hooks-component-703df5aed7f6
 
+    setAllData(countryDataSmall);
     const data = allData.flatMap(item => item.CapitalName).sort();
     setAllCities(data);
     console.log('allcities useEffect', allCities);
@@ -53,29 +55,47 @@ const App = () => {
 
   //this runs on every change in the dom, its checking for a winner
   useEffect(() => {
+    CheckForWinnerLoser();
+
+    console.log('selectedCity', selectedCity);
+    console.log('gameData.CapitalName', gameData.CapitalName);
+    console.log('setWinLose', winLose);
+
+    // return function cleanup() {
+    //   console.log('function cleanup');
+    // };
+  });
+
+  const CheckForWinnerLoser = () => {
     if (selectedCity && gameData.CapitalName) {
       if (selectedCity == gameData.CapitalName) {
         setWinLose('true');
         showToastWithGravity('You win the city is ' + selectedCity);
+        //  setSelectedCity(null);
       } else {
         setWinLose('false');
-        showToastWithGravity('You aare wrong the city is ' + selectedCity);
+        showToastWithGravity(
+          'You are wrong the city is ' +
+            gameData.CapitalName +
+            ' you said ' +
+            selectedCity,
+        );
+        //   setSelectedCity(null);
       }
+      //reset the selected city back to empty
     }
-    console.log('selectedCity', selectedCity);
-    console.log('gameData.CapitalName', gameData.CapitalName);
-    console.log('setWinLose', winLose);
-  });
+  };
+
   //win lose toast message
   const showToastWithGravity = msg => {
     ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.CENTER);
   };
-  
+
   //getting the random number to select the current country data
   const GetRandomNUmber = () => {
     var randomNumber = getRandomNumberBetween(0, allData.length);
     setNumber(randomNumber);
-      };
+  };
 
   const getRandomNumberBetween = (min, max) => {
     console.log('allData.length', max);
@@ -102,7 +122,8 @@ const App = () => {
 
   const onClickHandler = () => {
     console.log('onClickHandler', 'index');
-    GetRandomNUmber(); 
+    setSelectedCity(null);
+    GetRandomNUmber();
     allData.map((item, id) => {
       var selecteditem = allData[number]; //get the data at that point
 
@@ -129,10 +150,12 @@ const App = () => {
       <Button title="Guess the Capital City" onPress={onClickHandler}></Button>
 
       <SelectDropdown
+        ref={citiesDropdownRef}
         data={allCities}
         onSelect={(selectedItem, index) => {
           console.log(selectedItem, index);
         }}
+        defaultButtonText={'Select city'}
         buttonTextAfterSelection={(selectedItem, index) => {
           setSelectedCity(selectedItem);
 
