@@ -42,8 +42,9 @@ const App = () => {
 
   useEffect(() => {
     //https://javascript.plainenglish.io/what-is-the-equivalent-of-the-componentdidmount-method-in-a-react-function-hooks-component-703df5aed7f6
-    // setAllData(countryData);
-    const data = allData.flatMap(item => item.CapitalName);
+
+    const data = allData.flatMap(item => item.CapitalName).sort();
+
     setAllCities(data);
     console.log('allcities useEffect', allCities);
   }, []);
