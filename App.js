@@ -37,8 +37,9 @@ const App = () => {
   });
   //holds the name selected of the capital city
   const [selectedCity, setSelectedCity] = useState('Not selected');
-  const [allCities, setAllCities] = useState();
+  const [allCities, setAllCities] = useState(['fake', 'fake2']);
   const [number, setNumber] = useState(0);
+  const [winLose, setWinLose] = useState('false');
 
   useEffect(() => {
     //https://javascript.plainenglish.io/what-is-the-equivalent-of-the-componentdidmount-method-in-a-react-function-hooks-component-703df5aed7f6
@@ -48,6 +49,19 @@ const App = () => {
     setAllCities(data);
     console.log('allcities useEffect', allCities);
   }, []);
+
+  useEffect(() => {
+    if (selectedCity && gameData.CapitalName) {
+      if (selectedCity == gameData.CapitalName) {
+        setWinLose('true');
+      } else {
+        setWinLose('false');
+      }
+    }
+    console.log('selectedCity', selectedCity);
+    console.log('gameData.CapitalName', gameData.CapitalName);
+    console.log('setWinLose', winLose);
+  });
 
   const GetRandomNUmber = () => {
     //var datalength = allData.length;
@@ -108,7 +122,7 @@ const App = () => {
       <Section
         style={styles.sectionTitle}
         title="Guess the Capital City"></Section>
-      <Button title="New Country" onPress={onClickHandler}></Button>
+      <Button title="Guess New Capital" onPress={onClickHandler}></Button>
 
       <SelectDropdown
         data={allCities}
