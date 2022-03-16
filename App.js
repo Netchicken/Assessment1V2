@@ -21,7 +21,6 @@ import {
   Button,
   FlatList,
 } from 'react-native';
-//import RNPickerSelect from 'react-native-picker-select';
 
 import {LoadAllCities} from './Operations';
 import {countryData} from './cities';
@@ -38,16 +37,21 @@ const App = () => {
   });
   //holds the name selected of the capital city
   const [selectedCity, setSelectedCity] = useState('Not selected');
-  const [allCities, setAllCities] = useState(
-    allData.flatMap(item => item.CapitalName),
-  );
-
-  console.log('allcities', allCities);
-
+  const [allCities, setAllCities] = useState();
   const [number, setNumber] = useState(0);
 
-  const increase = () => {
-    var datalength = allData.length;
+  useEffect(() => {
+    //https://javascript.plainenglish.io/what-is-the-equivalent-of-the-componentdidmount-method-in-a-react-function-hooks-component-703df5aed7f6
+    // setAllData(countryData);
+    const data = allData.flatMap(item => item.CapitalName);
+    setAllCities(data);
+    console.log('allcities useEffect', allCities);
+  }, []);
+
+  const GetRandomNUmber = () => {
+    //var datalength = allData.length;
+    // console.log('allData.length', datalength);
+
     var randomNumber = getRandomNumberBetween(0, 20);
     setNumber(randomNumber);
     // number == 14 ? setNumber(1) : setNumber(number + 1);
@@ -77,52 +81,25 @@ const App = () => {
     );
   };
 
-  const sampleData = [
-    {
-      CountryName: 'Somaliland',
-      CapitalName: 'Hargeisa',
-      CapitalLatitude: 9.55,
-      CapitalLongitude: 44.05,
-      ContinentName: 'Africa',
-    },
-    {
-      CountryName: 'South Georgia and South Sandwich Islands',
-      CapitalName: 'King Edward Point',
-      CapitalLatitude: -54.283333,
-      CapitalLongitude: -36.5,
-      ContinentName: 'Antarctica',
-    },
-    {
-      CountryName: 'French Southern and Antarctic Lands',
-      CapitalName: 'Port-aux-Français',
-      CapitalLatitude: -49.35,
-      CapitalLongitude: 70.216667,
-      ContinentName: 'Antarctica',
-    },
-    {
-      CountryName: 'Palestine',
-      CapitalName: 'Jerusalem',
-      CapitalLatitude: 31.76666667,
-      CapitalLongitude: 35.233333,
-      ContinentName: 'Asia',
-    },
-  ];
-
   const onClickHandler = () => {
-    increase(); //increase the counter
-    // allData.map((item, id) => {
-    var selecteditem = allData[number]; //get the data at that point
+    console.log('onClickHandler', 'index');
+    GetRandomNUmber(); //increase the counter
+    allData.map((item, id) => {
+      var selecteditem = allData[number]; //get the data at that point
 
-    setGameData({
-      CountryName: selecteditem.CountryName,
-      CapitalName: selecteditem.CapitalName,
-      CapitalLatitude: selecteditem.CapitalLatitude,
-      CapitalLongitude: selecteditem.CapitalLongitude,
-      ContinentName: selecteditem.ContinentName,
+      setGameData({
+        CountryName: selecteditem.CountryName,
+        CapitalName: selecteditem.CapitalName,
+        CapitalLatitude: selecteditem.CapitalLatitude,
+        CapitalLongitude: selecteditem.CapitalLongitude,
+        ContinentName: selecteditem.ContinentName,
+      });
     });
-
     console.log('Random number', number);
     console.log('Country Data', allData[number]);
+    // var data = allData.flatMap(item => item.CapitalName);
+    // setAllCities(data);
+    // console.log('allcities', allCities);
   };
 
   return (
@@ -139,9 +116,11 @@ const App = () => {
         }}
         buttonTextAfterSelection={(selectedItem, index) => {
           setSelectedCity(selectedItem);
+
+          //https://www.npmjs.com/package/react-native-select-dropdown
           // text represented after item is selected
           // if data array is an array of objects then return selectedItem.property to render after item is selected
-          //return selectedItem;
+          return selectedItem;
         }}
         rowTextForSelection={(item, index) => {
           // text represented for each item in dropdown
@@ -181,3 +160,34 @@ const styles = StyleSheet.create({
 });
 
 export default App;
+
+//  const sampleData = [
+//     {
+//       CountryName: 'Somaliland',
+//       CapitalName: 'Hargeisa',
+//       CapitalLatitude: 9.55,
+//       CapitalLongitude: 44.05,
+//       ContinentName: 'Africa',
+//     },
+//     {
+//       CountryName: 'South Georgia and South Sandwich Islands',
+//       CapitalName: 'King Edward Point',
+//       CapitalLatitude: -54.283333,
+//       CapitalLongitude: -36.5,
+//       ContinentName: 'Antarctica',
+//     },
+//     {
+//       CountryName: 'French Southern and Antarctic Lands',
+//       CapitalName: 'Port-aux-Français',
+//       CapitalLatitude: -49.35,
+//       CapitalLongitude: 70.216667,
+//       ContinentName: 'Antarctica',
+//     },
+//     {
+//       CountryName: 'Palestine',
+//       CapitalName: 'Jerusalem',
+//       CapitalLatitude: 31.76666667,
+//       CapitalLongitude: 35.233333,
+//       ContinentName: 'Asia',
+//     },
+//   ];
