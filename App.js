@@ -19,69 +19,73 @@ import {
   SectionList,
   Colors,
   Button,
-  FlatList,
+  ToastAndroid,
 } from 'react-native';
 
 import {LoadAllCities} from './Operations';
 import {countryData} from './cities';
+import {countryDataSmall} from './citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 
 const App = () => {
-  const [allData, setAllData] = useState(countryData);
+  const [allData, setAllData] = useState(countryDataSmall); //all the data of the countries
   const [gameData, setGameData] = useState({
     CountryName: 'aa',
     CapitalName: 'aa',
     CapitalLatitude: 0,
     CapitalLongitude: 0,
     ContinentName: 'aa',
-  });
-  //holds the name selected of the capital city
-  const [selectedCity, setSelectedCity] = useState('Not selected');
-  const [allCities, setAllCities] = useState(['fake', 'fake2']);
-  const [number, setNumber] = useState(0);
+  }); //holds the selected country details
+
+  const [selectedCity, setSelectedCity] = useState('Not selected'); //selected city
+  const [allCities, setAllCities] = useState(['fake', 'fake2']); //dropdown data
+  const [number, setNumber] = useState(0); //random number
   const [winLose, setWinLose] = useState('false');
 
+  //this run only at the initial stage, AFTER the dom has loaded ,[] at the end makes it run once
   useEffect(() => {
     //https://javascript.plainenglish.io/what-is-the-equivalent-of-the-componentdidmount-method-in-a-react-function-hooks-component-703df5aed7f6
 
     const data = allData.flatMap(item => item.CapitalName).sort();
-
     setAllCities(data);
     console.log('allcities useEffect', allCities);
   }, []);
 
+  //this runs on every change in the dom, its checking for a winner
   useEffect(() => {
     if (selectedCity && gameData.CapitalName) {
       if (selectedCity == gameData.CapitalName) {
         setWinLose('true');
+        showToastWithGravity('You win the city is ' + selectedCity);
       } else {
         setWinLose('false');
+        showToastWithGravity('You aare wrong the city is ' + selectedCity);
       }
     }
     console.log('selectedCity', selectedCity);
     console.log('gameData.CapitalName', gameData.CapitalName);
     console.log('setWinLose', winLose);
   });
-
-  const GetRandomNUmber = () => {
-    //var datalength = allData.length;
-    // console.log('allData.length', datalength);
-
-    var randomNumber = getRandomNumberBetween(0, 20);
-    setNumber(randomNumber);
-    // number == 14 ? setNumber(1) : setNumber(number + 1);
+  //win lose toast message
+  const showToastWithGravity = msg => {
+    ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.CENTER);
   };
+  
+  //getting the random number to select the current country data
+  const GetRandomNUmber = () => {
+    var randomNumber = getRandomNumberBetween(0, allData.length);
+    setNumber(randomNumber);
+      };
 
   const getRandomNumberBetween = (min, max) => {
+    console.log('allData.length', max);
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
   const Section = ({children, title}) => {
     return (
       <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>
-          {title} {number}
-        </Text>
+        <Text style={styles.sectionTitle}>{title}</Text>
         <Text>
           the city is {gameData.CapitalName ? gameData.CapitalName : ''}
         </Text>
@@ -98,7 +102,7 @@ const App = () => {
 
   const onClickHandler = () => {
     console.log('onClickHandler', 'index');
-    GetRandomNUmber(); //increase the counter
+    GetRandomNUmber(); 
     allData.map((item, id) => {
       var selecteditem = allData[number]; //get the data at that point
 
@@ -121,8 +125,8 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       <Section
         style={styles.sectionTitle}
-        title="Guess the Capital City"></Section>
-      <Button title="Guess New Capital" onPress={onClickHandler}></Button>
+        title="Test your City knowledge"></Section>
+      <Button title="Guess the Capital City" onPress={onClickHandler}></Button>
 
       <SelectDropdown
         data={allCities}
