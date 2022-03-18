@@ -30,59 +30,61 @@ import SelectDropdown from 'react-native-select-dropdown';
 const App = () => {
   const [allData, setAllData] = useState([]); //all the data of the countries
   const [gameData, setGameData] = useState({
-    CountryName: 'aa',
-    CapitalName: 'aa',
+    CountryName: 'Start',
+    CapitalName: 'Start',
     CapitalLatitude: 0,
     CapitalLongitude: 0,
-    ContinentName: 'aa',
+    ContinentName: 'Start',
   }); //holds the selected country details
 
   const [selectedCity, setSelectedCity] = useState(null); //selected city
-  const [allCities, setAllCities] = useState(['fake', 'fake2']); //dropdown data
+  const [allCities, setAllCities] = useState([]); //dropdown data
   const [number, setNumber] = useState(0); //random number
   const [winLose, setWinLose] = useState('false');
-  const citiesDropdownRef = useRef();
+  const [selectionTrigger, setSelectionTrigger] = useState(false);
+  const citiesDropdownRef = useRef({});
 
   //this run only at the initial stage, AFTER the dom has loaded ,[] at the end makes it run once
   useEffect(() => {
     //https://javascript.plainenglish.io/what-is-the-equivalent-of-the-componentdidmount-method-in-a-react-function-hooks-component-703df5aed7f6
+    //https://dmitripavlutin.com/react-useeffect-explanation/
+    //https://daveceddia.com/useeffect-hook-examples/
 
-    setAllData(countryDataSmall);
-    const data = allData.flatMap(item => item.CapitalName).sort();
-    setAllCities(data);
-    console.log('allcities useEffect', allCities);
+    const fetchData = () => {
+      setAllData(countryDataSmall);
+      const data = allData.flatMap(item => item.CapitalName).sort();
+      setAllCities(data);
+      console.log('allcities useEffect', allCities);
+    };
+
+    fetchData();
   }, []);
 
-  //this runs on every change in the dom, its checking for a winner
+  // this runs whenever selectedcity changes
   useEffect(() => {
-    CheckForWinnerLoser();
-
-    console.log('selectedCity', selectedCity);
-    console.log('gameData.CapitalName', gameData.CapitalName);
-    console.log('setWinLose', winLose);
-
-    // return function cleanup() {
-    //   console.log('function cleanup');
-    // };
-  });
+    //  console.log('CheckForWinnerLoser In UseEffect', selectedCity);
+    //   selectedCity === null ? '' : CheckForWinnerLoser();
+    //  const data = allData.flatMap(item => item.CapitalName).sort();
+    // setAllCities(data);
+  }, [selectedCity]);
 
   const CheckForWinnerLoser = () => {
-    if (selectedCity && gameData.CapitalName) {
+    console.log('gameData.CapitalName', gameData.CapitalName);
+    console.log('selectedCity', selectedCity);
+
+    if (selectedCity != null && gameData.CapitalName !== null) {
       if (selectedCity == gameData.CapitalName) {
-        setWinLose('true');
+        // setWinLose('true');
         showToastWithGravity('You win the city is ' + selectedCity);
-        //  setSelectedCity(null);
       } else {
-        setWinLose('false');
+        // setWinLose('false');
         showToastWithGravity(
           'You are wrong the city is ' +
             gameData.CapitalName +
             ' you said ' +
             selectedCity,
         );
-        //   setSelectedCity(null);
       }
-      //reset the selected city back to empty
     }
   };
 
@@ -121,8 +123,10 @@ const App = () => {
   };
 
   const onClickHandler = () => {
-    console.log('onClickHandler', 'index');
-    setSelectedCity(null);
+    //  setSelectionTrigger[false];
+    console.log('onClickHandler', 'triggered');
+
+    //setSelectedCity(null);
     GetRandomNUmber();
     allData.map((item, id) => {
       var selecteditem = allData[number]; //get the data at that point
@@ -137,17 +141,22 @@ const App = () => {
     });
     console.log('Random number', number);
     console.log('Country Data', allData[number]);
-    // var data = allData.flatMap(item => item.CapitalName);
-    // setAllCities(data);
-    // console.log('allcities', allCities);
+    console.log('allcities', allCities);
   };
+  const onClickSubmit = () => {
+    // selectedCity === null
+    //   ? showToastWithGravity('First choose a city then click the button')
+    //   : CheckForWinnerLoser();
 
+    CheckForWinnerLoser();
+    citiesDropdownRef.current.reset();
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Section
         style={styles.sectionTitle}
         title="Test your City knowledge"></Section>
-      <Button title="Guess the Capital City" onPress={onClickHandler}></Button>
+      <Button title="Choose a random Country" onPress={onClickHandler}></Button>
 
       <SelectDropdown
         ref={citiesDropdownRef}
@@ -170,6 +179,8 @@ const App = () => {
           return item;
         }}
       />
+
+      <Button title="Submit your answer" onPress={onClickSubmit}></Button>
     </SafeAreaView>
   );
 };
@@ -202,34 +213,3 @@ const styles = StyleSheet.create({
 });
 
 export default App;
-
-//  const sampleData = [
-//     {
-//       CountryName: 'Somaliland',
-//       CapitalName: 'Hargeisa',
-//       CapitalLatitude: 9.55,
-//       CapitalLongitude: 44.05,
-//       ContinentName: 'Africa',
-//     },
-//     {
-//       CountryName: 'South Georgia and South Sandwich Islands',
-//       CapitalName: 'King Edward Point',
-//       CapitalLatitude: -54.283333,
-//       CapitalLongitude: -36.5,
-//       ContinentName: 'Antarctica',
-//     },
-//     {
-//       CountryName: 'French Southern and Antarctic Lands',
-//       CapitalName: 'Port-aux-Français',
-//       CapitalLatitude: -49.35,
-//       CapitalLongitude: 70.216667,
-//       ContinentName: 'Antarctica',
-//     },
-//     {
-//       CountryName: 'Palestine',
-//       CapitalName: 'Jerusalem',
-//       CapitalLatitude: 31.76666667,
-//       CapitalLongitude: 35.233333,
-//       ContinentName: 'Asia',
-//     },
-//   ];
