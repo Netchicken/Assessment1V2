@@ -43,7 +43,7 @@ const App = () => {
   const [winLose, setWinLose] = useState('false');
 
   const [citiesCorrect, setCitiesCorrect] = useState(['a', 'b', 'c']);
-  const [citiesWrong, setCitiesWrong] = useState([]);
+  const [citiesWrong, setCitiesWrong] = useState(['a', 'b', 'c']);
 
   const [selectionTrigger, setSelectionTrigger] = useState(false);
   const citiesDropdownRef = useRef({});
@@ -198,25 +198,46 @@ const App = () => {
       />
 
       <Button title="Submit your answer" onPress={onClickSubmit}></Button>
+      <View
+        style={[
+          styles.container,
+          {
+            flexDirection: 'row',
+            alignContent: 'space-between',
+          },
+        ]}>
+        <View>
+          <ScrollView>
+            <Text style={styles.headingoutome}>Correct Cities</Text>
+            {citiesCorrect.map(item => {
+              return (
+                <View>
+                  <Text key={item} style={styles.item}>
+                    {item}
+                  </Text>
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
 
-      {/* <ScrollView>
-      
-        <Text style={styles.headingoutome}>Correct Cities</Text>
-        {citiesCorrect.map(item => {
-          return (
-            <View>
-              <Text key={item} style={styles.item}>
-                {item}
-              </Text>
-            </View>
-          );
-        })}
-    </ScrollView>
-    */}
+        <View>
+          <ScrollView>
+            <Text style={styles.headingoutome}>Wrong Cities</Text>
+            {citiesWrong.map(item => {
+              return (
+                <View>
+                  <Text key={item} style={styles.item}>
+                    {item}
+                  </Text>
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
+      </View>
     </SafeAreaView>
   );
-
-
 };
 
 const styles = StyleSheet.create({
