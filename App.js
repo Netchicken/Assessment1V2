@@ -14,12 +14,12 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  SectionList,
   Colors,
   Button,
   ToastAndroid,
+  TouchableOpacity,
+  FlatList,
 } from 'react-native';
 
 import {LoadAllCities} from './Operations';
@@ -41,6 +41,10 @@ const App = () => {
   const [allCities, setAllCities] = useState([]); //dropdown data
   const [number, setNumber] = useState(0); //random number
   const [winLose, setWinLose] = useState('false');
+
+  const [citiesCorrect, setCitiesCorrect] = useState(['a', 'b', 'c']);
+  const [citiesWrong, setCitiesWrong] = useState([]);
+
   const [selectionTrigger, setSelectionTrigger] = useState(false);
   const citiesDropdownRef = useRef({});
 
@@ -54,7 +58,8 @@ const App = () => {
       setAllData(countryDataSmall);
       const data = allData.flatMap(item => item.CapitalName).sort();
       setAllCities(data);
-      console.log('allcities useEffect', allCities);
+      console.log('useEffect allcities ', allCities);
+      LoadGamedata();
     };
 
     fetchData();
@@ -69,13 +74,17 @@ const App = () => {
   }, [selectedCity]);
 
   const CheckForWinnerLoser = () => {
-    console.log('gameData.CapitalName', gameData.CapitalName);
-    console.log('selectedCity', selectedCity);
+    console.log(
+      'CheckForWinnerLoser gameData.CapitalName',
+      gameData.CapitalName,
+    );
+    console.log('CheckForWinnerLoser selectedCity', selectedCity);
 
     if (selectedCity != null && gameData.CapitalName !== null) {
       if (selectedCity == gameData.CapitalName) {
-        // setWinLose('true');
         showToastWithGravity('You win the city is ' + selectedCity);
+        // pass in the citiescorrect state, spread it,  and pass both to setCitiesCorrect
+        setCitiesCorrect(citiesCorrect => [...citiesCorrect, selectedCity]);
       } else {
         // setWinLose('false');
         showToastWithGravity(
@@ -84,6 +93,8 @@ const App = () => {
             ' you said ' +
             selectedCity,
         );
+        // pass in the citiesWrong state, spread it,  and pass both to setCitiesWrong
+        setCitiesWrong(citiesWrong => [...citiesWrong, selectedCity]);
       }
     }
   };
@@ -100,7 +111,7 @@ const App = () => {
   };
 
   const getRandomNumberBetween = (min, max) => {
-    console.log('allData.length', max);
+    console.log('getRandomNumberBetween allData.length', max);
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
@@ -123,14 +134,21 @@ const App = () => {
   };
 
   const onClickHandler = () => {
-    //  setSelectionTrigger[false];
+    const data = allData.flatMap(item => item.CapitalName).sort();
+    setAllCities(data);
     console.log('onClickHandler', 'triggered');
 
-    //setSelectedCity(null);
+    LoadGamedata();
+
+    console.log('onClickHandler Random number', number);
+    console.log('onClickHandler Country Data', allData[number]);
+    // console.log('onClickHandler allcities', allCities);
+  };
+
+  const LoadGamedata = () => {
     GetRandomNUmber();
     allData.map((item, id) => {
       var selecteditem = allData[number]; //get the data at that point
-
       setGameData({
         CountryName: selecteditem.CountryName,
         CapitalName: selecteditem.CapitalName,
@@ -139,18 +157,19 @@ const App = () => {
         ContinentName: selecteditem.ContinentName,
       });
     });
-    console.log('Random number', number);
-    console.log('Country Data', allData[number]);
-    console.log('allcities', allCities);
   };
+
   const onClickSubmit = () => {
     // selectedCity === null
     //   ? showToastWithGravity('First choose a city then click the button')
     //   : CheckForWinnerLoser();
-
     CheckForWinnerLoser();
     citiesDropdownRef.current.reset();
   };
+  alertItemName = item => {
+    alert(item);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Section
@@ -161,9 +180,7 @@ const App = () => {
       <SelectDropdown
         ref={citiesDropdownRef}
         data={allCities}
-        onSelect={(selectedItem, index) => {
-          console.log(selectedItem, index);
-        }}
+        onSelect={(selectedItem, index) => {}}
         defaultButtonText={'Select city'}
         buttonTextAfterSelection={(selectedItem, index) => {
           setSelectedCity(selectedItem);
@@ -181,11 +198,36 @@ const App = () => {
       />
 
       <Button title="Submit your answer" onPress={onClickSubmit}></Button>
+
+      {/* <ScrollView>
+      
+        <Text style={styles.headingoutome}>Correct Cities</Text>
+        {citiesCorrect.map(item => {
+          return (
+            <View>
+              <Text key={item} style={styles.item}>
+                {item}
+              </Text>
+            </View>
+          );
+        })}
+    </ScrollView>
+    */}
     </SafeAreaView>
   );
+
+
 };
 
 const styles = StyleSheet.create({
+  headingoutome: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  item: {
+    paddingLeft: 20,
+    fontSize: 18,
+  },
   sectionContainer: {
     marginTop: 32,
     paddingHorizontal: 24,
