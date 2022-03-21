@@ -18,12 +18,9 @@ import {
   Colors,
   Button,
   ToastAndroid,
-  TouchableOpacity,
-  FlatList,
 } from 'react-native';
 
-import {LoadAllCities} from './Operations';
-import {countryData} from './cities';
+
 import {countryDataSmall} from './citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 
@@ -42,8 +39,8 @@ const App = () => {
   const [number, setNumber] = useState(0); //random number
   const [winLose, setWinLose] = useState('false');
 
-  const [citiesCorrect, setCitiesCorrect] = useState(['a', 'b', 'c']);
-  const [citiesWrong, setCitiesWrong] = useState(['a', 'b', 'c']);
+  const [citiesCorrect, setCitiesCorrect] = useState(['correct']);
+  const [citiesWrong, setCitiesWrong] = useState(['incorrect']);
 
   const [selectionTrigger, setSelectionTrigger] = useState(false);
   const citiesDropdownRef = useRef({});
@@ -221,13 +218,24 @@ const App = () => {
           </ScrollView>
         </View>
 
-        <View>
+        <View style={styles.resultcontainer}>
           <ScrollView>
-            <Text style={styles.headingoutome}>Wrong Cities</Text>
+            <Text
+              style={[
+                styles.headingoutome,
+                {marginLeft: 50, alignSelf: 'flex-end'},
+              ]}>
+              Wrong Cities
+            </Text>
             {citiesWrong.map(item => {
               return (
                 <View>
-                  <Text key={item} style={styles.item}>
+                  <Text
+                    key={item}
+                    style={[
+                      styles.item,
+                      {marginLeft: 50, alignSelf: 'flex-end'},
+                    ]}>
                     {item}
                   </Text>
                 </View>
@@ -241,9 +249,19 @@ const App = () => {
 };
 
 const styles = StyleSheet.create({
+  resultcontainer: {
+    backgroundColor: '#7CA1B4',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   headingoutome: {
+    flex: 1,
+    flexDirection: 'row',
     fontSize: 18,
     fontWeight: 'bold',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   item: {
     paddingLeft: 20,
