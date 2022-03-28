@@ -20,12 +20,11 @@ import {
   ToastAndroid,
 } from 'react-native';
 
-
-import {countryDataSmall} from './citiesSmall';
+import {countryDataSmall, createCities} from './citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 
 const App = () => {
-  const [allData, setAllData] = useState([]); //all the data of the countries
+  const [allData, setAllData] = useState(countryDataSmall); //all the data of the countries
   const [gameData, setGameData] = useState({
     CountryName: 'Start',
     CapitalName: 'Start',
@@ -33,16 +32,15 @@ const App = () => {
     CapitalLongitude: 0,
     ContinentName: 'Start',
   }); //holds the selected country details
-
+//           read          settting new data
+  
   const [selectedCity, setSelectedCity] = useState(null); //selected city
   const [allCities, setAllCities] = useState([]); //dropdown data
   const [number, setNumber] = useState(0); //random number
-  const [winLose, setWinLose] = useState('false');
 
   const [citiesCorrect, setCitiesCorrect] = useState(['correct']);
   const [citiesWrong, setCitiesWrong] = useState(['incorrect']);
 
-  const [selectionTrigger, setSelectionTrigger] = useState(false);
   const citiesDropdownRef = useRef({});
 
   //this run only at the initial stage, AFTER the dom has loaded ,[] at the end makes it run once
@@ -52,6 +50,7 @@ const App = () => {
     //https://daveceddia.com/useeffect-hook-examples/
 
     const fetchData = () => {
+   
       setAllData(countryDataSmall);
       const data = allData.flatMap(item => item.CapitalName).sort();
       setAllCities(data);
@@ -83,7 +82,6 @@ const App = () => {
         // pass in the citiescorrect state, spread it,  and pass both to setCitiesCorrect
         setCitiesCorrect(citiesCorrect => [...citiesCorrect, selectedCity]);
       } else {
-        // setWinLose('false');
         showToastWithGravity(
           'You are wrong the city is ' +
             gameData.CapitalName +
@@ -203,7 +201,7 @@ const App = () => {
             alignContent: 'space-between',
           },
         ]}>
-        <View>
+        <View style={styles.resultcontainer}>
           <ScrollView>
             <Text style={styles.headingoutome}>Correct Cities</Text>
             {citiesCorrect.map(item => {

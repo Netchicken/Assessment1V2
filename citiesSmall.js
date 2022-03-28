@@ -1,3 +1,21 @@
+//https://stackoverflow.com/questions/26253351/correct-modification-of-state-arrays-in-react-js
+//https://stackoverflow.com/questions/71581036/map-data-in-react-to-array-of-objects ME
+//we have to remap the city data into an object of value city because the stupid select can't read a simple list of cities
+
+//city data. the Select  needs to be in the array object of
+//value and label have to map the city data to this object
+// const [selectData, setSelectData] = useState([{ value: "1", label: "city" }]);
+export function createCities() {
+  const getSelectDataList = countryDataSmall.map(item => item.CapitalName);
+  //https://stackoverflow.com/questions/43572436/sort-an-array-of-objects-in-react-and-render-them
+  getSelectDataList.sort();
+
+  console.log('createCities in cities.js selectData ', getSelectDataList);
+  return getSelectDataList;
+
+  // const data = allData.flatMap((item) => item.CapitalName).sort();
+}
+
 export const countryDataSmall = [
   {
     CountryName: 'French Polynesia',
