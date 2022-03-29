@@ -7,7 +7,7 @@
  */
 //https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
 import React, {useState, useEffect, useRef} from 'react';
-// import type {Node} from 'react';
+import {Operations} from './components/Operations.js';
 import {
   SafeAreaView,
   ScrollView,
@@ -20,9 +20,9 @@ import {
   ToastAndroid,
 } from 'react-native';
 
-import {countryDataSmall, createCities} from './citiesSmall';
+import {countryDataSmall, createCities} from './assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
-
+//import {createDBTable} from './src/components/Operations.js';
 const App = () => {
   const [allData, setAllData] = useState(countryDataSmall); //all the data of the countries
   const [gameData, setGameData] = useState({
@@ -32,8 +32,8 @@ const App = () => {
     CapitalLongitude: 0,
     ContinentName: 'Start',
   }); //holds the selected country details
-//           read          settting new data
-  
+  //           read          settting new data
+
   const [selectedCity, setSelectedCity] = useState(null); //selected city
   const [allCities, setAllCities] = useState([]); //dropdown data
   const [number, setNumber] = useState(0); //random number
@@ -50,7 +50,7 @@ const App = () => {
     //https://daveceddia.com/useeffect-hook-examples/
 
     const fetchData = () => {
-   
+      // createDBTable; //create the database if it doesn't exist
       setAllData(countryDataSmall);
       const data = allData.flatMap(item => item.CapitalName).sort();
       setAllCities(data);
@@ -248,7 +248,7 @@ const App = () => {
 
 const styles = StyleSheet.create({
   resultcontainer: {
-    backgroundColor: '#7CA1B4',
+    // backgroundColor: '#7CA1B4',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -286,7 +286,7 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight,
   },
   scrollView: {
-    backgroundColor: '#0080ff',
+    // backgroundColor: '#0080ff',
     marginHorizontal: 20,
   },
 });

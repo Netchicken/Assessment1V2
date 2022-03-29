@@ -13,7 +13,8 @@
     "react": "17.0.2",
     "react-native": "0.67.3",
     "react-native-maps": "^0.30.1",
-    "react-native-select-dropdown": "^1.8.0"
+    "react-native-select-dropdown": "^1.8.0",
+    "react-native-sqlite-storage": "^6.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
