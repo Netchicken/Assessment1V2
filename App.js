@@ -7,7 +7,7 @@
  */
 //https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
 import React, {useState, useEffect, useRef} from 'react';
-import {Operations} from './components/Operations.js';
+import {getDBConnection} from './src/components/Operations';
 import {
   SafeAreaView,
   ScrollView,
@@ -22,7 +22,7 @@ import {
 
 import {countryDataSmall, createCities} from './assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
-//import {createDBTable} from './src/components/Operations.js';
+
 const App = () => {
   const [allData, setAllData] = useState(countryDataSmall); //all the data of the countries
   const [gameData, setGameData] = useState({
@@ -35,7 +35,7 @@ const App = () => {
   //           read          settting new data
 
   const [selectedCity, setSelectedCity] = useState(null); //selected city
-  const [allCities, setAllCities] = useState([]); //dropdown data
+  const [allCities, setAllCities] = useState(createCities()); //dropdown data
   const [number, setNumber] = useState(0); //random number
 
   const [citiesCorrect, setCitiesCorrect] = useState(['correct']);
@@ -50,11 +50,10 @@ const App = () => {
     //https://daveceddia.com/useeffect-hook-examples/
 
     const fetchData = () => {
-      // createDBTable; //create the database if it doesn't exist
-      setAllData(countryDataSmall);
-      const data = allData.flatMap(item => item.CapitalName).sort();
-      setAllCities(data);
-      console.log('useEffect allcities ', allCities);
+      //setAllData(countryDataSmall);
+      //const data = createCities(); //allData.flatMap(item => item.CapitalName).sort();
+      //  setAllCities(createCities());
+      console.log('useEffect allData ', allData);
       LoadGamedata();
     };
 
@@ -129,6 +128,7 @@ const App = () => {
   };
 
   const onClickHandler = () => {
+    getDBConnection(); //create the database if it doesn't exist
     const data = allData.flatMap(item => item.CapitalName).sort();
     setAllCities(data);
     console.log('onClickHandler', 'triggered');
@@ -152,6 +152,7 @@ const App = () => {
         ContinentName: selecteditem.ContinentName,
       });
     });
+    console.log('LoadGamedata', gameData);
   };
 
   const onClickSubmit = () => {
