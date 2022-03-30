@@ -1,88 +1,129 @@
+import React, {useState, useEffect, useRef} from 'react';
 import countryData from '../../assets/cities';
 import SQLite from 'react-native-sqlite-storage';
+import {StyleSheet, View, Text, Pressable} from 'react-native';
+//import GamePlay from './GamePlay';
 
-import {
-  enablePromise,
-  openDatabase,
-  SQLiteDatabase,
-} from 'react-native-sqlite-storage'; //https://blog.logrocket.com/using-sqlite-with-react-native/
+//https://github.com/Shahid313/react-native-sqlite-storage/blob/main/screens/HomeScreen.js
 
-const tableName = 'store';
-const db = '';
-// const db = SQLite.openDatabase(
-//   {
-//     name: 'MainDB',
-//     location: 'default',
-//   },
-//   () => {},
-//   error => {
-//     console.log(error);
-//   },
-// );
-//export default function Operations() {
+export default function Operations({navigation, route}) {
+  const [citiesWrong, setCitiesWrong] = useState([]);
+  const tableName = 'store';
+  //const {ItemName, ItemId} = route.params;
 
-export async function getDBConnection() {
-  //enablePromise(true);
-  db = SQLite.openDatabase(
-    {name: 'store.db', location: 'default'},
+  const onPressHandler = () => {
+    navigation.navigate('Guess_Cities');
+    // navigation.goBack();
+    // navigation.setParams({ ItemId: 14 });
+  };
+  const db = SQLite.openDatabase(
+    {
+      name: 'store.db',
+      location: 'default',
+    },
     () => {
       console.log('Operations DB open exists', 'success');
-    }, //if succesful do nothing
+    },
     error => {
-      console.log('Operations DB open error', error); //otherwise log error
-      createDBTable();
-      db = getDBConnection();
+      console.log('Operations DB open error', error);
     },
   );
-  return db;
-}
 
-//create a table if it doesn't exist Table name = store fileds ID City Date
-export function createDBTable() {
-  console.log(
-    'Operations createTablecreateDBTable',
-    'createTablecreateDBTable',
-  );
-  db.transaction(tx => {
-    tx.executeSql(
-      'CREATE TABLE IF NOT EXISTS ' +
-        'store ' +
-        '(ID INTEGER PRIMARY KEY AUTOINCREMENT, City TEXT, Date Text);',
-    );
-  });
-  return db;
-}
+  useEffect(() => {
+    createDBTable();
+  }, []);
 
-export async function getTodoItems() {
-  try {
-    const cityItems = [];
-    const results = await db.executeSql(
-      `SELECT rowid as id,value FROM ${tableName}`,
+  //create a table if it doesn't exist Table name = store fileds ID City Date
+  const createDBTable = () => {
+    console.log(
+      'Operations createTablecreateDBTable',
+      'createTablecreateDBTable',
     );
-    results.forEach(result => {
-      for (let index = 0; index < result.rows.length; index++) {
-        cityItems.push(result.rows.item(index));
-      }
+    db.transaction(tx => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS Store (Id	INTEGER NOT NULL UNIQUE,	City	TEXT,	Date	TEXT,	PRIMARY KEY(Id AUTOINCREMENT)',
+      );
     });
-    return cityItems;
-  } catch (error) {
-    console.error(error);
-    throw Error('Failed to get cityItems !!!');
+  };
+
+  const getCities = () => {
+    try {
+      const cityItems = [];
+      const results = db.executeSql('SELECT rowid as id, City FROM Store');
+      results.forEach(result => {
+        for (let index = 0; index < result.rows.length; index++) {
+          cityItems.push(result.rows.item(index));
+        }
+      });
+      return cityItems;
+    } catch (error) {
+      console.error(error);
+      throw Error('Failed to get cityItems !!!');
+    }
+  };
+  //`INSERT INTO store values` + cityItem;
+  //cityItems.map(i => `(${i.id}, '${i.value}')`).join(',');
+  const saveCities = cityItem => {
+    const insertQuery =
+      'INSERT INTO Store (City,Date) VALUES  (' + cityItem + ',)';
+    console.error('Insert', cityItem);
+    return db.executeSql(insertQuery);
+  };
+
+  async function deleteCity(id) {
+    const deleteQuery = `DELETE from Store where rowid = ${id}`;
+    await db.executeSql(deleteQuery);
   }
+
+  return (
+    <View>
+      <View style={styles.body}>
+        <Text style={styles.text}>Operations</Text>
+        <Pressable
+          onPress={onPressHandler}
+          style={({pressed}) => ({backgroundColor: pressed ? '#ddd' : '#0f0'})}>
+          <Text style={styles.text}>Go Back to GamePlay</Text>
+        </Pressable>
+        <Text style={styles.text}>{ItemName}</Text>
+        <Text style={styles.text}>ID: {ItemId}</Text>
+      </View>
+
+      {getCities().map(city => (
+        <Text>{city.City}</Text>
+      ))}
+      <Text style={styles.LoginButtonText}>LOGIN</Text>
+    </View>
+  );
 }
 
-export async function saveTodoItems(cityItems) {
-  const insertQuery =
-    `INSERT OR REPLACE INTO ${tableName}(rowid, value) values` +
-    cityItems.map(i => `(${i.id}, '${i.value}')`).join(',');
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    margin: 10,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
 
-  return db.executeSql(insertQuery);
-}
+  LoginButton: {
+    width: 120,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: 'green',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  LoginButtonText: {
+    color: '#fff',
+  },
+});
 
-export async function deleteTodoItem(id) {
-  const deleteQuery = `DELETE from ${tableName} where rowid = ${id}`;
-  await db.executeSql(deleteQuery);
-}
+//};
+
 //}
 //==============================================
 

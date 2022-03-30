@@ -1,0 +1,315 @@
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow strict-local
+ */
+//https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
+import React, {useState, useEffect, useRef} from 'react';
+//import {getDBConnection, saveCitiesWrong} from './src/components/Operations';
+import {
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  Colors,
+  Button,
+  ToastAndroid,
+  Pressable,
+} from 'react-native';
+
+import {countryDataSmall, createCities} from '../../assets/citiesSmall';
+import SelectDropdown from 'react-native-select-dropdown';
+//import Operations from './Operations';
+
+export default function GamePlay({navigation, route}) {
+  // const {ItemName, ItemId} = route.params;
+  // https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-20/src/ScreenA.js
+  const onPressHandler = () => {
+    navigation.navigate('Database');
+    // navigation.toggleDrawer();
+  };
+
+  const [allData, setAllData] = useState(countryDataSmall); //all the data of the countries
+  const [gameData, setGameData] = useState({
+    CountryName: 'Start',
+    CapitalName: 'Start',
+    CapitalLatitude: 0,
+    CapitalLongitude: 0,
+    ContinentName: 'Start',
+  }); //holds the selected country details
+  //           read          settting new data
+
+  const [selectedCity, setSelectedCity] = useState(null); //selected city
+  const [allCities, setAllCities] = useState(createCities()); //dropdown data
+  const [number, setNumber] = useState(0); //random number
+
+  const [citiesCorrect, setCitiesCorrect] = useState(['correct']);
+  const [citiesWrong, setCitiesWrong] = useState(['incorrect']);
+
+  const citiesDropdownRef = useRef({});
+  var db = '';
+  //this run only at the initial stage, AFTER the dom has loaded ,[] at the end makes it run once
+  useEffect(() => {
+    //https://javascript.plainenglish.io/what-is-the-equivalent-of-the-componentdidmount-method-in-a-react-function-hooks-component-703df5aed7f6
+    //https://dmitripavlutin.com/react-useeffect-explanation/
+    //https://daveceddia.com/useeffect-hook-examples/
+
+    const fetchData = () => {
+      //setAllData(countryDataSmall);
+      //const data = createCities(); //allData.flatMap(item => item.CapitalName).sort();
+      //  setAllCities(createCities());
+      console.log('useEffect allData ', allData);
+      LoadGamedata();
+    };
+
+    fetchData();
+  }, []);
+
+  // this runs whenever selectedcity changes
+  useEffect(() => {
+    //  console.log('CheckForWinnerLoser In UseEffect', selectedCity);
+    //   selectedCity === null ? '' : CheckForWinnerLoser();
+    //  const data = allData.flatMap(item => item.CapitalName).sort();
+    // setAllCities(data);
+  }, [selectedCity]);
+
+  const CheckForWinnerLoser = () => {
+    console.log(
+      'CheckForWinnerLoser gameData.CapitalName',
+      gameData.CapitalName,
+    );
+    console.log('CheckForWinnerLoser selectedCity', selectedCity);
+
+    if (selectedCity != null && gameData.CapitalName !== null) {
+      if (selectedCity == gameData.CapitalName) {
+        showToastWithGravity('You win the city is ' + selectedCity);
+        // pass in the citiescorrect state, spread it,  and pass both to setCitiesCorrect
+        setCitiesCorrect(citiesCorrect => [...citiesCorrect, selectedCity]);
+      } else {
+        saveCitiesWrong(gameData.CapitalName);
+        showToastWithGravity(
+          'You are wrong the city is ' +
+            gameData.CapitalName +
+            ' you said ' +
+            selectedCity,
+        );
+        // pass in the citiesWrong state, spread it,  and pass both to setCitiesWrong
+        setCitiesWrong(citiesWrong => [...citiesWrong, selectedCity]);
+      }
+    }
+  };
+
+  //win lose toast message
+  const showToastWithGravity = msg => {
+    ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.CENTER);
+  };
+
+  //getting the random number to select the current country data
+  const GetRandomNUmber = () => {
+    var randomNumber = getRandomNumberBetween(0, allData.length);
+    setNumber(randomNumber);
+  };
+
+  const getRandomNumberBetween = (min, max) => {
+    console.log('getRandomNumberBetween allData.length', max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
+
+  const Section = ({children, title}) => {
+    return (
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        <Text>
+          the city is {gameData.CapitalName ? gameData.CapitalName : ''}
+        </Text>
+        <Text>
+          the Country is {gameData.CountryName ? gameData.CountryName : ''}
+        </Text>
+        <Text>
+          the Continent is{' '}
+          {gameData.ContinentName ? gameData.ContinentName : ''}
+        </Text>
+      </View>
+    );
+  };
+
+  const onClickHandler = () => {
+    // db = getDBConnection(); //create the database if it doesn't exist
+    const data = allData.flatMap(item => item.CapitalName).sort();
+    setAllCities(data);
+    console.log('onClickHandler', 'triggered');
+
+    LoadGamedata();
+
+    console.log('onClickHandler Random number', number);
+    console.log('onClickHandler Country Data', allData[number]);
+    // console.log('onClickHandler allcities', allCities);
+  };
+
+  const LoadGamedata = () => {
+    GetRandomNUmber();
+    allData.map((item, id) => {
+      var selecteditem = allData[number]; //get the data at that point
+      setGameData({
+        CountryName: selecteditem.CountryName,
+        CapitalName: selecteditem.CapitalName,
+        CapitalLatitude: selecteditem.CapitalLatitude,
+        CapitalLongitude: selecteditem.CapitalLongitude,
+        ContinentName: selecteditem.ContinentName,
+      });
+    });
+    console.log('LoadGamedata', gameData);
+  };
+
+  const onClickSubmit = () => {
+    // selectedCity === null
+    //   ? showToastWithGravity('First choose a city then click the button')
+    //   : CheckForWinnerLoser();
+    CheckForWinnerLoser();
+    citiesDropdownRef.current.reset();
+  };
+  alertItemName = item => {
+    alert(item);
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Section
+        style={styles.sectionTitle}
+        title="Test your City knowledge"></Section>
+      <Button title="Choose a random Country" onPress={onClickHandler}></Button>
+
+      <SelectDropdown
+        ref={citiesDropdownRef}
+        data={allCities}
+        onSelect={(selectedItem, index) => {}}
+        defaultButtonText={'Select city'}
+        buttonTextAfterSelection={(selectedItem, index) => {
+          setSelectedCity(selectedItem);
+
+          //https://www.npmjs.com/package/react-native-select-dropdown
+          // text represented after item is selected
+          // if data array is an array of objects then return selectedItem.property to render after item is selected
+          return selectedItem;
+        }}
+        rowTextForSelection={(item, index) => {
+          // text represented for each item in dropdown
+          // if data array is an array of objects then return item.property to represent item in dropdown
+          return item;
+        }}
+      />
+
+      <Button title="Submit your answer" onPress={onClickSubmit}></Button>
+      <View
+        style={[
+          styles.container,
+          {
+            flexDirection: 'row',
+            alignContent: 'space-between',
+          },
+        ]}>
+        <View style={styles.resultcontainer}>
+          <ScrollView>
+            <Text style={styles.headingoutome}>Correct Cities</Text>
+            {citiesCorrect.map(item => {
+              return (
+                <View>
+                  <Text key={item} style={styles.item}>
+                    {item}
+                  </Text>
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
+
+        <View style={styles.resultcontainer}>
+          <ScrollView>
+            <Text
+              style={[
+                styles.headingoutome,
+                {marginLeft: 50, alignSelf: 'flex-end'},
+              ]}>
+              Wrong Cities
+            </Text>
+            {citiesWrong.map(item => {
+              return (
+                <View>
+                  <Text
+                    key={item}
+                    style={[
+                      styles.item,
+                      {marginLeft: 50, alignSelf: 'flex-end'},
+                    ]}>
+                    {item}
+                  </Text>
+                </View>
+              );
+            })}
+          </ScrollView>
+        </View>
+        <Pressable
+          onPress={onPressHandler}
+          style={({pressed}) => ({
+            backgroundColor: pressed ? '#ddd' : '#0f0',
+          })}></Pressable>
+        {/* <Text style={styles.text}>{ItemName}</Text>
+        <Text style={styles.text}>ID: {ItemId}</Text> */}
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  resultcontainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headingoutome: {
+    flex: 1,
+    flexDirection: 'row',
+    fontSize: 18,
+    fontWeight: 'bold',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  item: {
+    paddingLeft: 20,
+    fontSize: 18,
+  },
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+  },
+  highlight: {
+    fontWeight: '700',
+  },
+  container: {
+    flex: 1,
+    paddingTop: StatusBar.currentHeight,
+  },
+  scrollView: {
+    marginHorizontal: 20,
+  },
+  text: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    margin: 10,
+  },
+});
+
+//export default GamePlay;
