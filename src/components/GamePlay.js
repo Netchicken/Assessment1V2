@@ -29,6 +29,7 @@ export default function GamePlay({navigation, route}) {
   // const {ItemName, ItemId} = route.params;
   // https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-20/src/ScreenA.js
   const onPressHandler = () => {
+    console.log('onPressHandler ', 'Database');
     navigation.navigate('Database');
     // navigation.toggleDrawer();
   };
@@ -261,8 +262,7 @@ export default function GamePlay({navigation, route}) {
           style={({pressed}) => ({
             backgroundColor: pressed ? '#ddd' : '#0f0',
           })}></Pressable>
-        {/* <Text style={styles.text}>{ItemName}</Text>
-        <Text style={styles.text}>ID: {ItemId}</Text> */}
+        
       </View>
     </SafeAreaView>
   );

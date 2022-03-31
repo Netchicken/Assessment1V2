@@ -12,8 +12,8 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import Operations from './src/components/Operations';
 import GamePlay from './src/components/GamePlay';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-// https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-20/src/App.js
-
+// https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-18/src/App.js
+//https://www.youtube.com/watch?v=_031dsQNy88&list=PL8kfZyp--gEXs4YsSLtB3KqDtdOFHMjWZ&index=20
 const Tab = createMaterialBottomTabNavigator();
 const App = () => {
   return (
@@ -22,6 +22,7 @@ const App = () => {
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, size, color}) => {
             let iconName;
+            console.log('App route', route.name);
             if (route.name === 'Guess_Cities') {
               iconName = 'city';
               size = focused ? 25 : 20;
@@ -47,16 +48,11 @@ const App = () => {
         inactiveColor="#3e2465"
         // barStyle={{ backgroundColor: '#694fad' }}
       >
-        <Tab.Screen
-          //component is where you go to, name is used in navigation
-          name="Guess_Cities"
-          component={GamePlay}
-          // options={{tabBarBadge: 3}}
-        />
-
+        <Tab.Screen name="Guess_Cities" component={GamePlay} />
         <Tab.Screen name="Database" component={Operations} />
       </Tab.Navigator>
     </NavigationContainer>
+    // component is where you go to, name is used in navigation
   );
 };
 export default App;
