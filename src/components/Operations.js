@@ -8,7 +8,7 @@ import {StyleSheet, View, Text, Pressable} from 'react-native';
 
 export default function Operations({navigation, route}) {
   const [citiesWrong, setCitiesWrong] = useState([]);
-  const tableName = 'store';
+  const tableName = 'Store';
 
   const onPressHandler = () => {
     navigation.navigate('Guess_Cities');
@@ -17,7 +17,7 @@ export default function Operations({navigation, route}) {
   };
   const db = SQLite.openDatabase(
     {
-      name: 'store.db',
+      name: 'Store.db',
       location: 'default',
     },
     () => {
@@ -29,11 +29,25 @@ export default function Operations({navigation, route}) {
   );
 
   useEffect(() => {
+    console.log('Operations Useffect', 'success');
     createDBTable();
   }, []);
 
   //create a table if it doesn't exist Table name = store fileds ID City Date
   const createDBTable = () => {
+    db = SQLite.openDatabase(
+      {
+        name: 'Store.db',
+        location: 'default',
+      },
+      () => {
+        console.log('Operations DB open exists', 'success');
+      },
+      error => {
+        console.log('Operations DB open error', error);
+      },
+    );
+
     console.log(
       'Operations createTablecreateDBTable',
       'createTablecreateDBTable',
@@ -43,6 +57,18 @@ export default function Operations({navigation, route}) {
         'CREATE TABLE IF NOT EXISTS Store (Id	INTEGER NOT NULL UNIQUE,	City	TEXT,	Date	TEXT,	PRIMARY KEY(Id AUTOINCREMENT)',
       );
     });
+    const results = 'no data';
+    try {
+      const insertQuery =
+        'INSERT INTO Store (City,Date) VALUES  (Hamilton, Christchurch)';
+      console.error('Insert at create table', 'run');
+      db.executeSql(insertQuery);
+
+      results = db.executeSql('SELECT rowid as id, City FROM Store');
+    } catch (error) {
+      console.error('cityitems not inserting ', results);
+      throw Error('cityitems not inserting');
+    }
   };
 
   const getCities = () => {
