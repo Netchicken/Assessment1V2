@@ -6,16 +6,47 @@
  * @flow strict-local
  */
 //https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
-import React from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import Operations from './src/components/Operations';
 import GamePlay from './src/components/GamePlay';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import SQLite from 'react-native-sqlite-storage';
 // https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-18/src/App.js
 //https://www.youtube.com/watch?v=_031dsQNy88&list=PL8kfZyp--gEXs4YsSLtB3KqDtdOFHMjWZ&index=20
 const Tab = createMaterialBottomTabNavigator();
+
+//we need to check that there is a dabase here and working before entering the game
+const db = SQLite.openDatabase(
+  {
+    name: 'Store.db',
+    location: 'default',
+  },
+  () => {
+    console.log('App DB open exists', 'success');
+  },
+  error => {
+    console.log('App DB open error', error);
+  },
+);
+
 const App = () => {
+  useEffect(() => {
+    console.log('App Useffect', 'success');
+    createTable();
+  }, []);
+
+  const createTable = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS ' +
+          'Users ' +
+          '(ID INTEGER PRIMARY KEY AUTOINCREMENT, City TEXT);',
+      );
+    });
+  };
+
   return (
     <NavigationContainer>
       <Tab.Navigator

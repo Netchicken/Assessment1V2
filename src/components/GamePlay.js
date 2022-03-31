@@ -23,7 +23,21 @@ import {
 
 import {countryDataSmall, createCities} from '../../assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
+import SQLite from 'react-native-sqlite-storage';
 //import Operations from './Operations';
+
+const db = SQLite.openDatabase(
+  {
+    name: 'Store.db',
+    location: 'default',
+  },
+  () => {
+    console.log('GamePlay DB open exists', 'success');
+  },
+  error => {
+    console.log('GamePlay DB open error', error);
+  },
+);
 
 export default function GamePlay({navigation, route}) {
   // const {ItemName, ItemId} = route.params;
@@ -100,10 +114,35 @@ export default function GamePlay({navigation, route}) {
             ' you said ' +
             selectedCity,
         );
+        updateData();
         // pass in the citiesWrong state, spread it,  and pass both to setCitiesWrong
         setCitiesWrong(citiesWrong => {
           return [...citiesWrong, selectedCity];
         });
+      }
+    }
+  };
+
+  //save wrong city to database
+  const updateData = async () => {
+    if (selectedCity.length == 0) {
+      Alert.alert('Warning!', 'selectedCity is empty');
+    } else {
+      try {
+        db.transaction(tx => {
+          tx.executeSql(
+            'UPDATE Users SET City=?',
+            [selectedCity],
+            () => {
+              Alert.alert('Success!', 'Your wrong city has been updated.');
+            },
+            error => {
+              console.log(error);
+            },
+          );
+        });
+      } catch (error) {
+        console.log(error);
       }
     }
   };
@@ -262,7 +301,6 @@ export default function GamePlay({navigation, route}) {
           style={({pressed}) => ({
             backgroundColor: pressed ? '#ddd' : '#0f0',
           })}></Pressable>
-        
       </View>
     </SafeAreaView>
   );
