@@ -10,7 +10,7 @@ export function createCities() {
   //https://stackoverflow.com/questions/43572436/sort-an-array-of-objects-in-react-and-render-them
   getSelectDataList.sort();
 
-  console.log('createCities in cities.js selectData ', getSelectDataList);
+  console.log('createCities in citiesSmall.js selectData ', getSelectDataList);
   return getSelectDataList;
 
   // const data = allData.flatMap((item) => item.CapitalName).sort();

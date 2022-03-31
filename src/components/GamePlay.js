@@ -47,8 +47,8 @@ export default function GamePlay({navigation, route}) {
   const [allCities, setAllCities] = useState(createCities()); //dropdown data
   const [number, setNumber] = useState(0); //random number
 
-  const [citiesCorrect, setCitiesCorrect] = useState(['correct']);
-  const [citiesWrong, setCitiesWrong] = useState(['incorrect']);
+  const [citiesCorrect, setCitiesCorrect] = useState([]);
+  const [citiesWrong, setCitiesWrong] = useState([]);
 
   const citiesDropdownRef = useRef({});
   var db = '';
@@ -88,9 +88,11 @@ export default function GamePlay({navigation, route}) {
       if (selectedCity == gameData.CapitalName) {
         showToastWithGravity('You win the city is ' + selectedCity);
         // pass in the citiescorrect state, spread it,  and pass both to setCitiesCorrect
-        setCitiesCorrect(citiesCorrect => [...citiesCorrect, selectedCity]);
+        setCitiesCorrect(citiesCorrect => {
+          return [...citiesCorrect, selectedCity];
+        });
       } else {
-        saveCitiesWrong(gameData.CapitalName);
+        // saveCitiesWrong(gameData.CapitalName);
         showToastWithGravity(
           'You are wrong the city is ' +
             gameData.CapitalName +
@@ -98,7 +100,9 @@ export default function GamePlay({navigation, route}) {
             selectedCity,
         );
         // pass in the citiesWrong state, spread it,  and pass both to setCitiesWrong
-        setCitiesWrong(citiesWrong => [...citiesWrong, selectedCity]);
+        setCitiesWrong(citiesWrong => {
+          return [...citiesWrong, selectedCity];
+        });
       }
     }
   };
@@ -215,10 +219,10 @@ export default function GamePlay({navigation, route}) {
         <View style={styles.resultcontainer}>
           <ScrollView>
             <Text style={styles.headingoutome}>Correct Cities</Text>
-            {citiesCorrect.map(item => {
+            {citiesCorrect.map((item, index) => {
               return (
                 <View>
-                  <Text key={item} style={styles.item}>
+                  <Text key={index} style={styles.item}>
                     {item}
                   </Text>
                 </View>
@@ -236,11 +240,11 @@ export default function GamePlay({navigation, route}) {
               ]}>
               Wrong Cities
             </Text>
-            {citiesWrong.map(item => {
+            {citiesWrong.map((item, index) => {
               return (
                 <View>
                   <Text
-                    key={item}
+                    key={index}
                     style={[
                       styles.item,
                       {marginLeft: 50, alignSelf: 'flex-end'},

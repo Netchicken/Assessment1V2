@@ -1,7 +1,7 @@
 package com.assessment1v2;
 
 import com.facebook.react.ReactActivity;
-
+import android.os.Bundle; 
 public class MainActivity extends ReactActivity {
 
   /**
@@ -12,4 +12,13 @@ public class MainActivity extends ReactActivity {
   protected String getMainComponentName() {
     return "Assessment1V2";
   }
+
+// https://reactnavigation.org/docs/getting-started/
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+  super.onCreate(null);
+}
+
+
 }

@@ -8,11 +8,7 @@
 //https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {createStackNavigator} from '@react-navigation/stack';
 import Operations from './src/components/Operations';
 import GamePlay from './src/components/GamePlay';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -47,12 +43,12 @@ const App = () => {
           labelStyle: {fontSize: 10},
           showIcon: true,
         }}
-        // activeColor="#f0edf6"
-        // inactiveColor="#3e2465"
+        activeColor="#f0edf6"
+        inactiveColor="#3e2465"
         // barStyle={{ backgroundColor: '#694fad' }}
       >
         <Tab.Screen
-          //componet is where you go to, name is used in navigation
+          //component is where you go to, name is used in navigation
           name="Guess_Cities"
           component={GamePlay}
           // options={{tabBarBadge: 3}}

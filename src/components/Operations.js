@@ -9,7 +9,6 @@ import {StyleSheet, View, Text, Pressable} from 'react-native';
 export default function Operations({navigation, route}) {
   const [citiesWrong, setCitiesWrong] = useState([]);
   const tableName = 'store';
-  //const {ItemName, ItemId} = route.params;
 
   const onPressHandler = () => {
     navigation.navigate('Guess_Cities');
@@ -57,7 +56,7 @@ export default function Operations({navigation, route}) {
       });
       return cityItems;
     } catch (error) {
-      console.error(error);
+      console.error('cityitems not parsing ', error);
       throw Error('Failed to get cityItems !!!');
     }
   };
@@ -84,8 +83,6 @@ export default function Operations({navigation, route}) {
           style={({pressed}) => ({backgroundColor: pressed ? '#ddd' : '#0f0'})}>
           <Text style={styles.text}>Go Back to GamePlay</Text>
         </Pressable>
-        <Text style={styles.text}>{ItemName}</Text>
-        <Text style={styles.text}>ID: {ItemId}</Text>
       </View>
 
       {getCities().map(city => (
