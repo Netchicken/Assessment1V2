@@ -1,7 +1,15 @@
 import React, {useState, useEffect, useRef} from 'react';
 import countryData from '../../assets/cities';
 import SQLite from 'react-native-sqlite-storage';
-import {StyleSheet, View, Text, Pressable, Button} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+  Keyboard,
+} from 'react-native';
 //import GamePlay from './GamePlay';
 
 //https://github.com/Shahid313/react-native-sqlite-storage/blob/main/screens/HomeScreen.js
@@ -29,13 +37,23 @@ export default function Operations({navigation, route}) {
 
   useEffect(() => {
     console.log('Operations Useffect', 'success');
+    createTable();
     selectData();
   }, []);
 
-  const onPressHandler = () => {
-    //  navigation.navigate('Guess_Cities');
-    navigation.goBack();
-    // navigation.setParams({ ItemId: 14 });
+  const createTable = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS ' +
+          'Users ' +
+          '(ID INTEGER PRIMARY KEY AUTOINCREMENT, City TEXT);',
+      );
+    });
+
+    const fakeCity = 'Hamilton';
+    db.transaction(async tx => {
+      await tx.executeSql('INSERT INTO users City VALUES ?', fakeCity);
+    });
   };
 
   const selectData = () => {
@@ -80,63 +98,17 @@ export default function Operations({navigation, route}) {
     });
   };
 
-  //create a table if it doesn't exist Table name = store fileds ID City Date
-  // const createDBTable = () => {
-
-  //   console.log('Operations createDBTable', 'createDBTable');
-  //    db.transaction((tx => {
-  //      tx.executeSql(
-  //        'CREATE TABLE IF NOT EXISTS Store (Id	INTEGER NOT NULL UNIQUE,	City	TEXT,		PRIMARY KEY(Id AUTOINCREMENT)',
-
-  //   const results = 'no data';
-  //   try {
-  //     const insertQuery =
-  //       'INSERT INTO Store (City,Date) VALUES  (Hamilton, Christchurch)';
-  //     db.executeSql(insertQuery);
-  //     console.log('Insert at create table', insertQuery);
-  //     results = db.executeSql('SELECT rowid as id, City FROM Store');
-  //   } catch (error) {
-  //     console.error('cityitems not inserting ', results);
-  //     throw Error('cityitems not inserting');
-  //      }
-  //    );
-  //    });
-  // };
-
-  // const getCities = db => {
-  //   try {
-  //     const cityItems = [];
-  //     const results = db.executeSql('SELECT rowid as id, City FROM Store');
-  //     results.forEach(result => {
-  //       for (let index = 0; index < result.rows.length; index++) {
-  //         cityItems.push(result.rows.item(index));
-  //       }
-  //     });
-  //     return cityItems;
-  //   } catch (error) {
-  //     console.error('cityitems not parsing ', error);
-  //     throw Error('Failed to get cityItems !!!');
-  //   }
-  // };
-  // //`INSERT INTO store values` + cityItem;
-  // //cityItems.map(i => `(${i.id}, '${i.value}')`).join(',');
-  // const saveCities = cityItem => {
-  //   const insertQuery =
-  //     'INSERT INTO Store (City,Date) VALUES  (' + cityItem + ',)';
-  //   console.error('Insert', cityItem);
-  //   return db.executeSql(insertQuery);
-  // };
-
-  // async function deleteCity(id) {
-  //   const deleteQuery = `DELETE from Store where rowid = ${id}`;
-  //   await db.executeSql(deleteQuery);
-  // }
+  const onPressHandler = () => {
+    //  navigation.navigate('Guess_Cities');
+    navigation.goBack();
+    // navigation.setParams({ ItemId: 14 });
+  };
 
   return (
     <View>
       <View style={styles.body}>
         <View>
-          <Text>{City}</Text>
+          {/* <Text>{City}</Text> */}
 
           <TextInput placeholder="City" onChangeText={e => setUpdateCity(e)} />
           <TouchableOpacity
@@ -201,6 +173,58 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 });
+
+//create a table if it doesn't exist Table name = store fileds ID City Date
+// const createDBTable = () => {
+
+//   console.log('Operations createDBTable', 'createDBTable');
+//    db.transaction((tx => {
+//      tx.executeSql(
+//        'CREATE TABLE IF NOT EXISTS Store (Id	INTEGER NOT NULL UNIQUE,	City	TEXT,		PRIMARY KEY(Id AUTOINCREMENT)',
+
+//   const results = 'no data';
+//   try {
+//     const insertQuery =
+//       'INSERT INTO Store (City,Date) VALUES  (Hamilton, Christchurch)';
+//     db.executeSql(insertQuery);
+//     console.log('Insert at create table', insertQuery);
+//     results = db.executeSql('SELECT rowid as id, City FROM Store');
+//   } catch (error) {
+//     console.error('cityitems not inserting ', results);
+//     throw Error('cityitems not inserting');
+//      }
+//    );
+//    });
+// };
+
+// const getCities = db => {
+//   try {
+//     const cityItems = [];
+//     const results = db.executeSql('SELECT rowid as id, City FROM Store');
+//     results.forEach(result => {
+//       for (let index = 0; index < result.rows.length; index++) {
+//         cityItems.push(result.rows.item(index));
+//       }
+//     });
+//     return cityItems;
+//   } catch (error) {
+//     console.error('cityitems not parsing ', error);
+//     throw Error('Failed to get cityItems !!!');
+//   }
+// };
+// //`INSERT INTO store values` + cityItem;
+// //cityItems.map(i => `(${i.id}, '${i.value}')`).join(',');
+// const saveCities = cityItem => {
+//   const insertQuery =
+//     'INSERT INTO Store (City,Date) VALUES  (' + cityItem + ',)';
+//   console.error('Insert', cityItem);
+//   return db.executeSql(insertQuery);
+// };
+
+// async function deleteCity(id) {
+//   const deleteQuery = `DELETE from Store where rowid = ${id}`;
+//   await db.executeSql(deleteQuery);
+// }
 
 //};
 
