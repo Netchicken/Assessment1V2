@@ -26,19 +26,6 @@ import SelectDropdown from 'react-native-select-dropdown';
 import SQLite from 'react-native-sqlite-storage';
 //import Operations from './Operations';
 
-const db = SQLite.openDatabase(
-  {
-    name: 'Store.db',
-    location: 'default',
-  },
-  () => {
-    console.log('GamePlay DB open exists', 'success');
-  },
-  error => {
-    console.log('GamePlay DB open error', error);
-  },
-);
-
 export default function GamePlay({navigation, route}) {
   // const {ItemName, ItemId} = route.params;
   // https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-20/src/ScreenA.js
@@ -125,8 +112,21 @@ export default function GamePlay({navigation, route}) {
 
   //save wrong city to database
   const updateData = async () => {
+    const db = SQLite.openDatabase(
+      {
+        name: 'Store.db',
+        location: 'default',
+      },
+      () => {
+        console.log('GamePlay DB open exists', 'success');
+      },
+      error => {
+        console.log('GamePlay DB open error', error);
+      },
+    );
+
     if (selectedCity.length == 0) {
-      Alert.alert('Warning!', 'selectedCity is empty');
+      showToastWithGravity('Warning! selectedCity is empty');
     } else {
       try {
         db.transaction(tx => {
@@ -134,7 +134,9 @@ export default function GamePlay({navigation, route}) {
             'UPDATE Users SET City=?',
             [selectedCity],
             () => {
-              Alert.alert('Success!', 'Your wrong city has been updated.');
+              showToastWithGravity(
+                'Success! Your wrong city has been updated.',
+              );
             },
             error => {
               console.log(error);
@@ -182,7 +184,6 @@ export default function GamePlay({navigation, route}) {
   };
 
   const onClickHandler = () => {
-    // db = getDBConnection(); //create the database if it doesn't exist
     const data = allData.flatMap(item => item.CapitalName).sort();
     setAllCities(data);
     console.log('onClickHandler', 'triggered');

@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   Keyboard,
+  ScrollView,
 } from 'react-native';
 //import GamePlay from './GamePlay';
 
@@ -32,13 +33,13 @@ const db = SQLite.openDatabase(
 );
 
 export default function Operations({navigation, route}) {
-  const [cities, setCities] = useState('');
+  const [cities, setCities] = useState([]);
   const [updateCity, setUpdateCity] = useState('');
 
   useEffect(() => {
     console.log('Operations Useffect', 'success');
-    createTable();
-    selectData();
+    // createTable();
+    selectDataHandler();
   }, []);
 
   const createTable = () => {
@@ -49,20 +50,41 @@ export default function Operations({navigation, route}) {
           '(ID INTEGER PRIMARY KEY AUTOINCREMENT, City TEXT);',
       );
     });
-
-    const fakeCity = 'Hamilton';
+    //From DBBrowser creation
+    // CREATE TABLE "Users"(
+    // 	"ID"	INTEGER,
+    // 	"City"	TEXT,
+    // 	PRIMARY KEY("ID" AUTOINCREMENT)
+    // );
+    const fakeCity = 'Fake Hamilton'; //sqlite INSERT INTO Users (City) VALUES ("fakeCity")
     db.transaction(async tx => {
-      await tx.executeSql('INSERT INTO users City VALUES ?', fakeCity);
+      await tx.executeSql('INSERT INTO users (City) VALUES (' + fakeCity + ')');
     });
   };
 
-  const selectData = () => {
+  const selectDataHandler = () => {
+    const db = SQLite.openDatabase(
+      {
+        name: 'Store.db',
+        location: 'default',
+      },
+      () => {
+        console.log('Operations DB open exists', 'success');
+      },
+      error => {
+        console.log('Operations DB open error', error);
+      },
+    );
+
+    console.log('Operations selectDataHandler', 'click');
     db.transaction(tx => {
       tx.executeSql('SELECT City FROM Users', [], (tx, results) => {
         var len = results.rows.length;
+        console.log('Operations selectDataHandler len', len);
         if (len > 0) {
-          var city = results.rows.item(0).City;
-          setCities(city);
+          // var city = results.rows.item(0).City;
+          setCities(results);
+          console.log('Operations selectDataHandler', results);
         }
       });
     });
@@ -107,32 +129,50 @@ export default function Operations({navigation, route}) {
   return (
     <View>
       <View style={styles.body}>
-        <View>
-          {/* <Text>{City}</Text> */}
+        {/* <View> */}
+        {/* <Text>{City}</Text> */}
 
-          <TextInput placeholder="City" onChangeText={e => setUpdateCity(e)} />
+        {/* <TextInput placeholder="City" onChangeText={e => setUpdateCity(e)} />
           <TouchableOpacity
             onPress={() => updateData()}
             style={styles.UpdateButton}>
             <Text style={styles.UpdateButtonText}>UPDATE</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </TouchableOpacity> */}
+        <TouchableOpacity
+          onPress={() => selectDataHandler()}
+          style={styles.UpdateButton}>
+          <Text style={styles.UpdateButtonText}>Show Cities</Text>
+        </TouchableOpacity>
+
+        <ScrollView>
+          {cities.map((item, index) => {
+            return (
+              <View>
+                <Text
+                  key={index}
+                  style={[
+                    styles.item,
+                    {marginLeft: 50, alignSelf: 'flex-end'},
+                  ]}>
+                  {item}
+                </Text>
+              </View>
+            );
+          })}
+        </ScrollView>
+        {/* <TouchableOpacity
             onPress={() => removeData()}
             style={styles.DeleteButton}>
             <Text style={styles.DeleteButtonText}>DELETE</Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
 
-        <Pressable
+        {/* <Pressable
           onPress={onPressHandler}
           style={({pressed}) => ({backgroundColor: pressed ? '#ddd' : '#0f0'})}>
           <Text style={styles.text}>Go Back to GamePlay</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
-
-      {/* {getCities().map(city => (
-        <Text>{city.City}</Text>
-      ))} */}
     </View>
   );
 }
