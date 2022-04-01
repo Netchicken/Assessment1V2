@@ -18,6 +18,8 @@ export default function Api({navigation, route}) {
   //https://home.openweathermap.org/
   //3f2e5dbaf5cf57927bf90f6b1acf3206   api key
   //https://openweathermap.org/current
+   const [selectedCity, setSelectedCity] = useState(null); //selected city
+  const [allCities, setAllCities] = useState(countryDataSmall); //dropdown data
   const citiesDropdownRef = useRef({});
 
   const selectDataHandler = () => {
@@ -26,10 +28,46 @@ export default function Api({navigation, route}) {
 
     //https://api.openweathermap.org/data/2.5/weather?q=London&appid=3f2e5dbaf5cf57927bf90f6b1acf3206
 
-    selectedCity;
+    //https://programmingwithmosh.com/react-native/make-api-calls-in-react-native-using-fetch/
+
+    const lat = selectedCity.CapitalLatitude.toString();
+    const lon = selectedCity.CapitalLongitude.toString();
+    getWeatherFromApi(lat, lon);
+
+    fetch(
+      'https:/api.openweathermap.org/data/2.5/weather?lat=' +
+        lat +
+        '&lon=' +
+        lon +
+        '&appid=3f2e5dbaf5cf57927bf90f6b1acf3206',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstParam: 'yourValue',
+        }),
+      },
+
+
+    );
   };
-  const [selectedCity, setSelectedCity] = useState(null); //selected city
-  const [allCities, setAllCities] = useState(countryDataSmall); //dropdown data
+
+  const getWeatherFromApi = async (props) => {
+    let response = await fetch(
+       'https:/api.openweathermap.org/data/2.5/weather?lat=' +
+        props.lat +
+        '&lon=' +
+        props.lon +
+        '&appid=3f2e5dbaf5cf57927bf90f6b1acf3206'
+    );
+    let json = await response.json();
+    return json.movies;
+  }
+};
+ 
   return (
     <View>
       <View style={styles.body}>
@@ -55,7 +93,7 @@ export default function Api({navigation, route}) {
           rowTextForSelection={(item, index) => {
             // text represented for each item in dropdown
             // if data array is an array of objects then return item.property to represent item in dropdown
-            return item;
+            return item.CapitalName;
           }}
         />
 
@@ -116,3 +154,48 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 });
+
+// {
+//   "coord": {
+//     "lon": 139,
+//     "lat": 35
+//   },
+//   "weather": [
+//     {
+//       "id": 800,
+//       "main": "Clear",
+//       "description": "clear sky",
+//       "icon": "01n"
+//     }
+//   ],
+//   "base": "stations",
+//   "main": {
+//     "temp": 283.88,
+//     "feels_like": 282.52,
+//     "temp_min": 283.88,
+//     "temp_max": 283.88,
+//     "pressure": 1011,
+//     "humidity": 58
+//   },
+//   "visibility": 10000,
+//   "wind": {
+//     "speed": 2.76,
+//     "deg": 58,
+//     "gust": 5.14
+//   },
+//   "clouds": {
+//     "all": 0
+//   },
+//   "dt": 1647357046,
+//   "sys": {
+//     "type": 2,
+//     "id": 2019346,
+//     "country": "JP",
+//     "sunrise": 1647377649,
+//     "sunset": 1647420692
+//   },
+//   "timezone": 32400,
+//   "id": 1851632,
+//   "name": "Shuzenji",
+//   "cod": 200
+// }
