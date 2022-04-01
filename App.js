@@ -11,6 +11,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import Operations from './src/components/Operations';
 import GamePlay from './src/components/GamePlay';
+import Api from './src/components/Api';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import SQLite from 'react-native-sqlite-storage';
 // https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-18/src/App.js
@@ -62,6 +63,10 @@ const App = () => {
               iconName = 'building';
               size = focused ? 25 : 20;
               color = focused ? '#f0f' : '#555';
+            } else if (route.name === 'Api') {
+              iconName = 'building';
+              size = focused ? 25 : 20;
+              color = focused ? '#f0f' : '#555';
             }
             return <FontAwesome5 name={iconName} size={size} color={color} />;
           },
@@ -81,6 +86,7 @@ const App = () => {
       >
         <Tab.Screen name="Guess_Cities" component={GamePlay} />
         <Tab.Screen name="Database" component={Operations} />
+        <Tab.Screen name="Api" component={Api} />
       </Tab.Navigator>
     </NavigationContainer>
     // component is where you go to, name is used in navigation

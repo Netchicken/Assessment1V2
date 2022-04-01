@@ -7,7 +7,6 @@
  */
 //https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
 import React, {useState, useEffect, useRef} from 'react';
-//import {getDBConnection, saveCitiesWrong} from './src/components/Operations';
 import {
   SafeAreaView,
   ScrollView,
@@ -215,9 +214,7 @@ export default function GamePlay({navigation, route}) {
   };
 
   const onClickSubmit = () => {
-    // selectedCity === null
-    //   ? showToastWithGravity('First choose a city then click the button')
-    //   : CheckForWinnerLoser();
+   
     CheckForWinnerLoser();
     citiesDropdownRef.current.reset();
   };
