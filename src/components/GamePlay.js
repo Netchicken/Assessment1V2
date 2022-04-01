@@ -115,7 +115,8 @@ export default function GamePlay({navigation, route}) {
     const db = SQLite.openDatabase(
       {
         name: 'Store.db',
-        location: 'default',
+        location: '~android/app/src/main/assets/',
+        // location: 'default',
       },
       () => {
         console.log('GamePlay DB open exists', 'success');
@@ -139,6 +140,9 @@ export default function GamePlay({navigation, route}) {
               );
             },
             error => {
+              showToastWithGravity(
+                'Sad! Your wrong city has not been updated.',
+              );
               console.log(error);
             },
           );

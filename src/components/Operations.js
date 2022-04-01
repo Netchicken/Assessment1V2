@@ -22,7 +22,7 @@ import {
 const db = SQLite.openDatabase(
   {
     name: 'Store.db',
-    location: 'default',
+    location: '~android/app/src/main/assets/',
   },
   () => {
     console.log('Operations DB open exists', 'success');
