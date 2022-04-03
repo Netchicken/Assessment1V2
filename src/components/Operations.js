@@ -129,15 +129,6 @@ export default function Operations({navigation, route}) {
   return (
     <View>
       <View style={styles.body}>
-        {/* <View> */}
-        {/* <Text>{City}</Text> */}
-
-        {/* <TextInput placeholder="City" onChangeText={e => setUpdateCity(e)} />
-          <TouchableOpacity
-            onPress={() => updateData()}
-            style={styles.UpdateButton}>
-            <Text style={styles.UpdateButtonText}>UPDATE</Text>
-          </TouchableOpacity> */}
         <TouchableOpacity
           onPress={() => selectDataHandler()}
           style={styles.UpdateButton}>
@@ -160,18 +151,6 @@ export default function Operations({navigation, route}) {
             );
           })}
         </ScrollView>
-        {/* <TouchableOpacity
-            onPress={() => removeData()}
-            style={styles.DeleteButton}>
-            <Text style={styles.DeleteButtonText}>DELETE</Text>
-          </TouchableOpacity>
-        </View> */}
-
-        {/* <Pressable
-          onPress={onPressHandler}
-          style={({pressed}) => ({backgroundColor: pressed ? '#ddd' : '#0f0'})}>
-          <Text style={styles.text}>Go Back to GamePlay</Text>
-        </Pressable> */}
       </View>
     </View>
   );

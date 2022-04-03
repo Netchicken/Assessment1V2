@@ -10,7 +10,9 @@ import {
   Button,
   ToastAndroid,
   Pressable,
+  TouchableOpacity,
 } from 'react-native';
+
 import {countryDataSmall} from '../../assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 
@@ -18,58 +20,67 @@ export default function Api({navigation, route}) {
   //https://home.openweathermap.org/
   //3f2e5dbaf5cf57927bf90f6b1acf3206   api key
   //https://openweathermap.org/current
-   const [selectedCity, setSelectedCity] = useState(null); //selected city
+  const [selectedCity, setSelectedCity] = useState(null); //selected city
   const [allCities, setAllCities] = useState(countryDataSmall); //dropdown data
   const citiesDropdownRef = useRef({});
+  const [cityTemp, setCityTemp] = useState(null); //selected city
 
-  const selectDataHandler = () => {
-    //api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid={API key}
-    //https://openweathermap.org/current
+  //const selectDataHandler = () => {
+  //api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid={API key}
+  //https://openweathermap.org/current
 
-    //https://api.openweathermap.org/data/2.5/weather?q=London&appid=3f2e5dbaf5cf57927bf90f6b1acf3206
+  //https://api.openweathermap.org/data/2.5/weather?q=London&appid=3f2e5dbaf5cf57927bf90f6b1acf3206
 
-    //https://programmingwithmosh.com/react-native/make-api-calls-in-react-native-using-fetch/
+  //https://programmingwithmosh.com/react-native/make-api-calls-in-react-native-using-fetch/
 
+  useEffect(() => {
+    getWeatherFromApi();
+  }, [selectedCity]);
+
+  //   const loadCityWeather = () => {
+  //     const lat = selectedCity.CapitalLatitude.toString();
+  //     const lon = selectedCity.CapitalLongitude.toString();
+  //     getWeatherFromApi(lat, lon);
+
+  //     fetch(
+  //       'https:/api.openweathermap.org/data/2.5/weather?lat=' +
+  //         lat +
+  //         '&lon=' +
+  //         lon +
+  //         '&appid=3f2e5dbaf5cf57927bf90f6b1acf3206',
+  //       {
+  //         method: 'POST',
+  //         headers: {
+  //           Accept: 'application/json',
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: JSON.stringify({
+  //           firstParam: 'yourValue',
+  //         }),
+  //       },
+  //     );
+  //   };
+  // };
+  const getWeatherFromApi = async () => {
     const lat = selectedCity.CapitalLatitude.toString();
     const lon = selectedCity.CapitalLongitude.toString();
-    getWeatherFromApi(lat, lon);
 
-    fetch(
+    let response = await fetch(
       'https:/api.openweathermap.org/data/2.5/weather?lat=' +
         lat +
         '&lon=' +
         lon +
         '&appid=3f2e5dbaf5cf57927bf90f6b1acf3206',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          firstParam: 'yourValue',
-        }),
-      },
-
-
-    );
-  };
-
-  const getWeatherFromApi = async (props) => {
-    let response = await fetch(
-       'https:/api.openweathermap.org/data/2.5/weather?lat=' +
-        props.lat +
-        '&lon=' +
-        props.lon +
-        '&appid=3f2e5dbaf5cf57927bf90f6b1acf3206'
     );
     let json = await response.json();
-    return json.movies;
-  }
-};
- 
+    setCityTemp(json.main.temp);
+  };
+
   return (
     <View>
+      <Text>
+        The Temperature in {selectedCity.CapitalName} is {cityTemp}
+      </Text>
       <View style={styles.body}>
         <TouchableOpacity
           onPress={() => selectDataHandler()}
