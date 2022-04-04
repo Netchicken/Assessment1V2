@@ -45,7 +45,7 @@ export default function GamePlay({navigation, route}) {
   //           read          settting new data
 
   const [selectedCity, setSelectedCity] = useState(null); //selected city
-  const [allCities, setAllCities] = useState(createCities()); //dropdown data
+  const [allCities, setAllCities] = useState(createCities()); //dropdown data only accepts [] of single data
   const [number, setNumber] = useState(0); //random number
 
   const [citiesCorrect, setCitiesCorrect] = useState([]);
@@ -60,9 +60,6 @@ export default function GamePlay({navigation, route}) {
     //https://daveceddia.com/useeffect-hook-examples/
 
     const fetchData = () => {
-      //setAllData(countryDataSmall);
-      //const data = createCities(); //allData.flatMap(item => item.CapitalName).sort();
-      //  setAllCities(createCities());
       console.log('useEffect allData ', allData);
       LoadGamedata();
     };
@@ -70,13 +67,8 @@ export default function GamePlay({navigation, route}) {
     fetchData();
   }, []);
 
-  // this runs whenever selectedcity changes
-  useEffect(() => {
-    //  console.log('CheckForWinnerLoser In UseEffect', selectedCity);
-    //   selectedCity === null ? '' : CheckForWinnerLoser();
-    //  const data = allData.flatMap(item => item.CapitalName).sort();
-    // setAllCities(data);
-  }, [selectedCity]);
+
+  
 
   const CheckForWinnerLoser = () => {
     console.log(
@@ -168,24 +160,7 @@ export default function GamePlay({navigation, route}) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
-  const Section = ({children, title}) => {
-    return (
-      <View style={styles.sectionContainer}>
-        <Text style={styles.sectionTitle}>{title}</Text>
-        <Text>
-          the city is {gameData.CapitalName ? gameData.CapitalName : ''}
-        </Text>
-        <Text>
-          the Country is {gameData.CountryName ? gameData.CountryName : ''}
-        </Text>
-        <Text>
-          the Continent is{' '}
-          {gameData.ContinentName ? gameData.ContinentName : ''}
-        </Text>
-      </View>
-    );
-  };
-
+ 
   const onClickHandler = () => {
     const data = allData.flatMap(item => item.CapitalName).sort();
     setAllCities(data);
@@ -214,12 +189,30 @@ export default function GamePlay({navigation, route}) {
   };
 
   const onClickSubmit = () => {
-   
     CheckForWinnerLoser();
     citiesDropdownRef.current.reset();
   };
   alertItemName = item => {
     alert(item);
+  };
+
+  
+ const Section = ({children, title}) => {
+    return (
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+        <Text>
+          the city is {gameData.CapitalName ? gameData.CapitalName : ''}
+        </Text>
+        <Text>
+          the Country is {gameData.CountryName ? gameData.CountryName : ''}
+        </Text>
+        <Text>
+          the Continent is{' '}
+          {gameData.ContinentName ? gameData.ContinentName : ''}
+        </Text>
+      </View>
+    );
   };
 
   return (
@@ -327,7 +320,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   sectionContainer: {
-    marginTop: 32,
+    marginTop: 10,
     paddingHorizontal: 24,
   },
   sectionTitle: {

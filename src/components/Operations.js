@@ -126,9 +126,21 @@ export default function Operations({navigation, route}) {
     // navigation.setParams({ ItemId: 14 });
   };
 
+  const Section = ({children, title}) => {
+    return (
+      <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+      </View>
+    );
+  };
+
   return (
     <View>
       <View style={styles.body}>
+        <Section
+          style={styles.sectionTitle}
+          title="Save and view cities to a database"></Section>
+
         <TouchableOpacity
           onPress={() => selectDataHandler()}
           style={styles.UpdateButton}>
@@ -190,6 +202,15 @@ const styles = StyleSheet.create({
   },
   DeleteButtonText: {
     color: '#fff',
+  },
+
+  sectionContainer: {
+    marginTop: 10,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
   },
 });
 
