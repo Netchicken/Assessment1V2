@@ -12,7 +12,9 @@ export default function Api({navigation, route}) {
   const [allCities, setAllCities] = useState(createCities()); //dropdown data
   const citiesDropdownRef = useRef({});
   const [cityTemp, setCityTemp] = useState(null); //selected city
-  const [weather, setWeather] = useState([]); //selected city
+  const [weather, setWeather] = useState({}); //selected city
+
+  //https://npm.io/package/react-native-weather-api   ???????????????????
 
   //const selectDataHandler = () => {
   //api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid={API key}
@@ -21,6 +23,12 @@ export default function Api({navigation, route}) {
   //https://api.openweathermap.org/data/2.5/weather?q=London&appid=3f2e5dbaf5cf57927bf90f6b1acf3206
 
   //https://programmingwithmosh.com/react-native/make-api-calls-in-react-native-using-fetch/
+
+  //morioh.com/p/014f4cd6df5a
+
+  //https://github.com/MuhammadTaimour95/Weather-App-React-Native?ref=morioh.com&utm_source=morioh.com
+
+  //www.youtube.com/watch?v=H5xIWY7pL-k
 
   useEffect(() => {
     getWeatherFromApi();
@@ -35,6 +43,7 @@ export default function Api({navigation, route}) {
 
     console.log('response', response);
     let json = await response.json();
+
     setWeather(json);
     console.log('weather', weather);
     setCityTemp(json.main.temp);
@@ -54,6 +63,7 @@ export default function Api({navigation, route}) {
       <Section
         style={styles.sectionTitle}
         title=" Choose a city to see the weather"></Section>
+
       <SelectDropdown
         ref={citiesDropdownRef}
         data={allCities}
@@ -73,27 +83,23 @@ export default function Api({navigation, route}) {
           return item.CapitalName;
         }}
       />
-      <Text>
-        The Temperature in{' '}
-        {selectedCity === null ? 'no city selected' : selectedCity} is{' '}
-        {cityTemp}C
-      </Text>
       <View>
         <Text>
-          {' '}
-          Not working?
-          {
-            (weather.map = item => {
-              <View>
-                <Text>It feels like {item.main.feels_like.toString()}C</Text>
-                <Text>The Humidity is {item.main.humidity.toString()}%</Text>
-                <Text>The sky is {item.weather.description.toString()}%</Text>
-              </View>;
-            })
-          }
+          The Temperature in{' '}
+          {selectedCity === null ? 'no city selected' : selectedCity} is{' '}
+          {cityTemp}C
         </Text>
-
-        
+        <Text> Not working?</Text>
+        //weather is not an array but a json object, can't map it
+        {/* {weather.map((item, index) => {
+          return (
+            <View>
+              <Text key={index}>It feels like {item}C</Text>
+              <Text key={index}>The Humidity is {item}%</Text>
+              <Text key={index}>The sky is {item}%</Text>
+            </View>
+          );
+        })} */}
       </View>
     </SafeAreaView>
   );
@@ -111,6 +117,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     alignItems: 'center',
     color: 'black',
+    // paddingTop: StatusBar.currentHeight,
   },
   sectionContainer: {
     marginTop: 10,

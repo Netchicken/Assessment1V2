@@ -10,7 +10,6 @@ import React, {useState, useEffect, useRef} from 'react';
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -196,7 +195,7 @@ export default function GamePlay({navigation, route}) {
     alert(item);
   };
 
-  
+
  const Section = ({children, title}) => {
     return (
       <View style={styles.sectionContainer}>
@@ -291,11 +290,7 @@ export default function GamePlay({navigation, route}) {
             })}
           </ScrollView>
         </View>
-        <Pressable
-          onPress={onPressHandler}
-          style={({pressed}) => ({
-            backgroundColor: pressed ? '#ddd' : '#0f0',
-          })}></Pressable>
+       
       </View>
     </SafeAreaView>
   );
@@ -337,7 +332,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingTop: StatusBar.currentHeight,
+    // paddingTop: StatusBar.currentHeight,
   },
   scrollView: {
     marginHorizontal: 20,
