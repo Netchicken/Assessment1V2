@@ -81,11 +81,11 @@ export default function Api({navigation, route}) {
       <SelectDropdown
         ref={citiesDropdownRef}
         data={allCities}
-        onSelect={(selectedItem, index) => {}}
+        onSelect={(selectedItem, index) => {
+          setSelectedCity(selectedItem);
+        }}
         defaultButtonText={'Select city'}
         buttonTextAfterSelection={(selectedItem, index) => {
-          setSelectedCity(selectedItem);
-
           //https://www.npmjs.com/package/react-native-select-dropdown
           // text represented after item is selected
           // if data array is an array of objects then return selectedItem.property to render after item is selected

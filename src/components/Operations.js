@@ -1,6 +1,8 @@
 import React, {useState, useEffect, useRef} from 'react';
 import countryData from '../../assets/cities';
 import SQLite from 'react-native-sqlite-storage';
+SQLite.DEBUG(false);
+SQLite.enablePromise(false);
 import {
   StyleSheet,
   View,
@@ -29,7 +31,7 @@ import {
 const db = SQLite.openDatabase(
   {
     name: 'Store.db',
-    location: '~android/app/src/main/assets/',
+    createFromLocation: 1, //'~android/app/src/main/assets/www',
   },
   () => {
     console.log('Operations DB open exists', 'success');
@@ -73,7 +75,7 @@ export default function Operations({navigation, route}) {
     const db = SQLite.openDatabase(
       {
         name: 'Store.db',
-        location: 'default',
+       createFromLocation: 1,// '~android/app/src/main/assets/',
       },
       () => {
         console.log('Operations DB open exists', 'success');

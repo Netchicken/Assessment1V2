@@ -54,7 +54,7 @@ const App = () => {
         screenOptions={({route}) => ({
           tabBarIcon: ({focused, size, color}) => {
             let iconName;
-            console.log('App route', route.name);
+            // console.log('App route', route.name);
             if (route.name === 'Guess_Cities') {
               iconName = 'city';
               size = focused ? 25 : 20;

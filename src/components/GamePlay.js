@@ -22,16 +22,14 @@ import {
 import {countryDataSmall, createCities} from '../../assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 import SQLite from 'react-native-sqlite-storage';
-//import Operations from './Operations';
+// SQLite.DEBUG(false);
+// SQLite.enablePromise(false);
 
 export default function GamePlay({navigation, route}) {
   // const {ItemName, ItemId} = route.params;
   // https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-20/src/ScreenA.js
-  const onPressHandler = () => {
-    console.log('onPressHandler ', 'Database');
-    navigation.navigate('Database');
-    // navigation.toggleDrawer();
-  };
+
+  //run when selectedcity changes
 
   const [allData, setAllData] = useState(countryDataSmall); //all the data of the countries
   const [gameData, setGameData] = useState({
@@ -41,7 +39,6 @@ export default function GamePlay({navigation, route}) {
     CapitalLongitude: 0,
     ContinentName: 'Start',
   }); //holds the selected country details
-  //           read          settting new data
 
   const [selectedCity, setSelectedCity] = useState(null); //selected city
   const [allCities, setAllCities] = useState(createCities()); //dropdown data only accepts [] of single data
@@ -66,8 +63,11 @@ export default function GamePlay({navigation, route}) {
     fetchData();
   }, []);
 
-
-  
+  //runs when selectedcity changes
+  useEffect(() => {
+    console.log('useEffect selectedCity ', selectedCity);
+    CheckForWinnerLoser();
+  }, [selectedCity]);
 
   const CheckForWinnerLoser = () => {
     console.log(
@@ -91,7 +91,7 @@ export default function GamePlay({navigation, route}) {
             ' you said ' +
             selectedCity,
         );
-        updateData();
+        insertData();
         // pass in the citiesWrong state, spread it,  and pass both to setCitiesWrong
         setCitiesWrong(citiesWrong => {
           return [...citiesWrong, selectedCity];
@@ -101,11 +101,11 @@ export default function GamePlay({navigation, route}) {
   };
 
   //save wrong city to database
-  const updateData = async () => {
+  const insertData = async () => {
     const db = SQLite.openDatabase(
       {
         name: 'Store.db',
-        location: '~android/app/src/main/assets/',
+        createFromLocation: 1, // '~android/app/src/main/assets/www/Store.db',
         // location: 'default',
       },
       () => {
@@ -120,25 +120,32 @@ export default function GamePlay({navigation, route}) {
       showToastWithGravity('Warning! selectedCity is empty');
     } else {
       try {
+        const sqlInsert =
+          'INSERT INTO Users (City) VALUES ("' + selectedCity + '")';
+        console.log('sqlInsert', sqlInsert);
         db.transaction(tx => {
           tx.executeSql(
-            'UPDATE Users SET City=?',
-            [selectedCity],
+            sqlInsert,
             () => {
-              showToastWithGravity(
-                'Success! Your wrong city has been updated.',
+              showToastWithGravityBottom(
+                'Success! ' +
+                  selectedCity +
+                  ' has been updated to the Database.',
               );
             },
             error => {
               showToastWithGravity(
-                'Sad! Your wrong city has not been updated.',
+                'Sad! ' + selectedCity + ' has not been updated.',
               );
-              console.log(error);
+              console.log(
+                'Saving ' + selectedCity + ' to the db not working',
+                error,
+              );
             },
           );
         });
       } catch (error) {
-        console.log(error);
+        console.log('Saving the city to the db not working', error);
       }
     }
   };
@@ -146,6 +153,9 @@ export default function GamePlay({navigation, route}) {
   //win lose toast message
   const showToastWithGravity = msg => {
     ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.CENTER);
+  };
+  const showToastWithGravityBottom = msg => {
+    ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
   };
 
   //getting the random number to select the current country data
@@ -159,7 +169,6 @@ export default function GamePlay({navigation, route}) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
- 
   const onClickHandler = () => {
     const data = allData.flatMap(item => item.CapitalName).sort();
     setAllCities(data);
@@ -195,8 +204,7 @@ export default function GamePlay({navigation, route}) {
     alert(item);
   };
 
-
- const Section = ({children, title}) => {
+  const Section = ({children, title}) => {
     return (
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>{title}</Text>
@@ -224,11 +232,11 @@ export default function GamePlay({navigation, route}) {
       <SelectDropdown
         ref={citiesDropdownRef}
         data={allCities}
-        onSelect={(selectedItem, index) => {}}
+        onSelect={(selectedItem, index) => {
+          setSelectedCity(selectedItem);
+        }}
         defaultButtonText={'Select city'}
         buttonTextAfterSelection={(selectedItem, index) => {
-          setSelectedCity(selectedItem);
-
           //https://www.npmjs.com/package/react-native-select-dropdown
           // text represented after item is selected
           // if data array is an array of objects then return selectedItem.property to render after item is selected
@@ -290,7 +298,6 @@ export default function GamePlay({navigation, route}) {
             })}
           </ScrollView>
         </View>
-       
       </View>
     </SafeAreaView>
   );
