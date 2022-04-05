@@ -26,7 +26,7 @@ import {
 //react-native link react-native-sqlite-storage
 //https://github.com/react-native-community/cli/blob/master/docs/autolinking.md
 
-const db = SQLite.openDatabase(
+const export db = SQLite.openDatabase(
   {
     name: 'Store.db',
     location: '~android/app/src/main/assets/',
@@ -39,15 +39,11 @@ const db = SQLite.openDatabase(
   },
 );
 
-export default function Operations({navigation, route}) {
+
   const [cities, setCities] = useState([]);
   const [updateCity, setUpdateCity] = useState('');
 
-  useEffect(() => {
-    console.log('Operations Useffect', 'success');
-    // createTable();
-    selectDataHandler();
-  }, []);
+  
 
   const createTable = () => {
     db.transaction(tx => {
@@ -141,85 +137,7 @@ export default function Operations({navigation, route}) {
     );
   };
 
-  return (
-    <View>
-      <View style={styles.body}>
-        <Section
-          style={styles.sectionTitle}
-          title="Save and view cities to a database"></Section>
 
-        <TouchableOpacity
-          onPress={() => selectDataHandler()}
-          style={styles.UpdateButton}>
-          <Text style={styles.UpdateButtonText}>Show Cities</Text>
-        </TouchableOpacity>
-
-        <ScrollView>
-          {cities.map((item, index) => {
-            return (
-              <View>
-                <Text
-                  key={index}
-                  style={[
-                    styles.item,
-                    {marginLeft: 50, alignSelf: 'flex-end'},
-                  ]}>
-                  {item}
-                </Text>
-              </View>
-            );
-          })}
-        </ScrollView>
-      </View>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  text: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    margin: 10,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    // flexDirection: 'column',
-  },
-
-  UpdateButton: {
-    width: 120,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'green',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  UpdateButtonText: {
-    color: '#fff',
-  },
-  DeleteButton: {
-    width: 120,
-    height: 40,
-    borderRadius: 10,
-    backgroundColor: 'red',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  DeleteButtonText: {
-    color: '#fff',
-  },
-
-  sectionContainer: {
-    marginTop: 10,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-});
 
 //create a table if it doesn't exist Table name = store fileds ID City Date
 // const createDBTable = () => {

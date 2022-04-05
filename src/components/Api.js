@@ -13,6 +13,7 @@ export default function Api({navigation, route}) {
   const citiesDropdownRef = useRef({});
   const [cityTemp, setCityTemp] = useState(null); //selected city
   const [weather, setWeather] = useState({}); //selected city
+  const [cityDetails, setCityDetails] = useState([]);
 
   //https://npm.io/package/react-native-weather-api   ???????????????????
 
@@ -47,6 +48,19 @@ export default function Api({navigation, route}) {
     setWeather(json);
     console.log('weather', weather);
     setCityTemp(json.main.temp);
+    setCityDetails([
+      json.main.temp,
+      json.main.humidity,
+      json.main.pressure,
+      json.main.temp_max,
+      json.main.temp_min,
+      json.weather[0].description,
+      json.weather[0].icon,
+      json.name,
+      json.sys.country,
+      json.sys.sunrise,
+      json.sys.sunset,
+    ]);
     console.log('weather json', json);
   };
 
@@ -80,26 +94,28 @@ export default function Api({navigation, route}) {
         rowTextForSelection={(item, index) => {
           // text represented for each item in dropdown
           // if data array is an array of objects then return item.property to represent item in dropdown
-          return item.CapitalName;
+          // console.log('rowTextForSelection', item);
+          return item;
         }}
       />
       <View>
-        <Text>
+        <Text style={styles.text}>
           The Temperature in{' '}
           {selectedCity === null ? 'no city selected' : selectedCity} is{' '}
           {cityTemp}C
         </Text>
-        <Text> Not working?</Text>
-        //weather is not an array but a json object, can't map it
-        {/* {weather.map((item, index) => {
-          return (
-            <View>
-              <Text key={index}>It feels like {item}C</Text>
-              <Text key={index}>The Humidity is {item}%</Text>
-              <Text key={index}>The sky is {item}%</Text>
-            </View>
-          );
-        })} */}
+
+        <View>
+          <Text style={styles.text}>The Humidity is {cityDetails[1]}%</Text>
+          <Text style={styles.text}>The Preasure is {cityDetails[2]}</Text>
+          <Text style={styles.text}>
+            The Max Temperature is {cityDetails[3]}C
+          </Text>
+          <Text style={styles.text}>
+            The Min Temperature is {cityDetails[4]}C
+          </Text>
+          <Text style={styles.text}>The Description is {cityDetails[5]}</Text>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -110,7 +126,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     margin: 10,
-    color: 'red',
   },
   container: {
     flex: 1,
