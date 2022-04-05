@@ -22,7 +22,7 @@ import {
 import {countryDataSmall, createCities} from '../../assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 import SQLite from 'react-native-sqlite-storage';
-SQLite.DEBUG(false);
+SQLite.DEBUG(false); //hides annoying errors
 SQLite.enablePromise(false);
 
 export default function GamePlay({navigation, route}) {
@@ -41,12 +41,10 @@ export default function GamePlay({navigation, route}) {
   const [selectedCity, setSelectedCity] = useState(null); //selected city
   const [allCities, setAllCities] = useState(createCities()); //dropdown data only accepts [] of single data
   const [number, setNumber] = useState(0); //random number
-
   const [citiesCorrect, setCitiesCorrect] = useState([]);
   const [citiesWrong, setCitiesWrong] = useState([]);
-
   const citiesDropdownRef = useRef({});
-  var db = '';
+
   //this run only at the initial stage, AFTER the dom has loaded ,[] at the end makes it run once
   useEffect(() => {
     //https://javascript.plainenglish.io/what-is-the-equivalent-of-the-componentdidmount-method-in-a-react-function-hooks-component-703df5aed7f6
@@ -63,7 +61,6 @@ export default function GamePlay({navigation, route}) {
   //runs when selectedcity changes
   useEffect(() => {
     console.log('useEffect selectedCity ', selectedCity);
-
     //need to check all three!!! sigh javascript
     selectedCity === null || selectedCity === undefined || selectedCity === ''
       ? ''
@@ -82,6 +79,7 @@ export default function GamePlay({navigation, route}) {
       (selectedCity !== '' && gameData.CapitalName !== 'Start')
     ) {
       if (selectedCity == gameData.CapitalName) {
+        //you have a winner
         showToastWithGravity('You win the city is ' + selectedCity);
         // pass in the citiescorrect state, spread it,  and pass both to setCitiesCorrect
         setCitiesCorrect(citiesCorrect => {
@@ -110,7 +108,6 @@ export default function GamePlay({navigation, route}) {
       {
         name: 'Store.db',
         createFromLocation: 1, // '~android/app/src/main/assets/www/Store.db',
-        // location: 'default',
       },
       () => {
         console.log('GamePlay DB open exists', 'success');
@@ -355,5 +352,3 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
-
-//export default GamePlay;

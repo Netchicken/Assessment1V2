@@ -78,11 +78,8 @@ export default function Operations({navigation, route}) {
         name: 'Store.db',
         createFromLocation: 1, // '~android/app/src/main/assets/',
       },
-      () => {
-        console.log('Operations DB open exists', 'success');
-      },
-      error => {
-        console.log('Operations DB open error', error);
+      () => {console.log('Operations DB open exists', 'success');},
+      error => {console.log('Operations DB open error', error);
       },
     );
 
@@ -91,7 +88,7 @@ export default function Operations({navigation, route}) {
       tx.executeSql('SELECT City FROM Users', [], (tx, results) => {
         var len = results.rows.length;
         console.log('Operations selectDataHandler len', len);
-        //   console.log('Operations selectDataHandler results',results.rows.item(0).City);
+      
         setCities([]); //empty state
         for (let i = 0; i < len; i++) {
           console.log(
@@ -173,7 +170,7 @@ export default function Operations({navigation, route}) {
     <SafeAreaView style={styles.container}>
       <Section
         style={styles.sectionTitle}
-        title="Save and view cities to a database"></Section>
+        title="View and Delete cities in the Database"></Section>
 
       <TouchableOpacity
         onPress={() => selectDataHandler()}
@@ -246,5 +243,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 24,
     fontWeight: '600',
+    justifyContent: 'center',
+    textAlign: 'center',
   },
 });
