@@ -22,14 +22,12 @@ import {
 import {countryDataSmall, createCities} from '../../assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 import SQLite from 'react-native-sqlite-storage';
-// SQLite.DEBUG(false);
-// SQLite.enablePromise(false);
+SQLite.DEBUG(false);
+SQLite.enablePromise(false);
 
 export default function GamePlay({navigation, route}) {
   // const {ItemName, ItemId} = route.params;
   // https://github.com/mahdi-sharifimehr/RN-Tutorial-Main/blob/RN-Tutorial-20/src/ScreenA.js
-
-  //run when selectedcity changes
 
   const [allData, setAllData] = useState(countryDataSmall); //all the data of the countries
   const [gameData, setGameData] = useState({
@@ -57,26 +55,32 @@ export default function GamePlay({navigation, route}) {
 
     const fetchData = () => {
       console.log('useEffect allData ', allData);
-      LoadGamedata();
+      // LoadGamedata();
     };
-
     fetchData();
   }, []);
 
   //runs when selectedcity changes
   useEffect(() => {
     console.log('useEffect selectedCity ', selectedCity);
-    CheckForWinnerLoser();
+
+    //need to check all three!!! sigh javascript
+    selectedCity === null || selectedCity === undefined || selectedCity === ''
+      ? ''
+      : CheckForWinnerLoser(); //if there is no city dont run check for winner
   }, [selectedCity]);
 
   const CheckForWinnerLoser = () => {
     console.log(
-      'CheckForWinnerLoser gameData.CapitalName',
-      gameData.CapitalName,
+      'CheckForWinnerLoser gameData.CapitalName selectedCity',
+      gameData.CapitalName + ' ' + selectedCity,
     );
-    console.log('CheckForWinnerLoser selectedCity', selectedCity);
 
-    if (selectedCity != null && gameData.CapitalName !== null) {
+    if (
+      selectedCity !== null ||
+      selectedCity !== undefined ||
+      (selectedCity !== '' && gameData.CapitalName !== 'Start')
+    ) {
       if (selectedCity == gameData.CapitalName) {
         showToastWithGravity('You win the city is ' + selectedCity);
         // pass in the citiescorrect state, spread it,  and pass both to setCitiesCorrect
@@ -91,7 +95,7 @@ export default function GamePlay({navigation, route}) {
             ' you said ' +
             selectedCity,
         );
-        insertData();
+        insertData(); //add word to database
         // pass in the citiesWrong state, spread it,  and pass both to setCitiesWrong
         setCitiesWrong(citiesWrong => {
           return [...citiesWrong, selectedCity];
@@ -120,12 +124,11 @@ export default function GamePlay({navigation, route}) {
       showToastWithGravity('Warning! selectedCity is empty');
     } else {
       try {
-        const sqlInsert =
-          'INSERT INTO Users (City) VALUES ("' + selectedCity + '")';
-        console.log('sqlInsert', sqlInsert);
+        //  const sqlInsert = console.log('sqlInsert', sqlInsert);
         db.transaction(tx => {
           tx.executeSql(
-            sqlInsert,
+            'INSERT INTO Users (City) VALUES (?)',
+            [selectedCity], //you must use this structure with executesql not usual sql
             () => {
               showToastWithGravityBottom(
                 'Success! ' +
@@ -135,7 +138,9 @@ export default function GamePlay({navigation, route}) {
             },
             error => {
               showToastWithGravity(
-                'Sad! ' + selectedCity + ' has not been updated.',
+                'Sad! ' +
+                  selectedCity +
+                  ' has not been updated in the database.',
               );
               console.log(
                 'Saving ' + selectedCity + ' to the db not working',

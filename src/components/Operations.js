@@ -1,5 +1,4 @@
 import React, {useState, useEffect, useRef} from 'react';
-import countryData from '../../assets/cities';
 import SQLite from 'react-native-sqlite-storage';
 SQLite.DEBUG(false);
 SQLite.enablePromise(false);
@@ -7,11 +6,9 @@ import {
   StyleSheet,
   View,
   Text,
-  Pressable,
-  TextInput,
   TouchableOpacity,
-  Keyboard,
   ScrollView,
+  SafeAreaView,
 } from 'react-native';
 //import GamePlay from './GamePlay';
 
@@ -46,10 +43,14 @@ export default function Operations({navigation, route}) {
   const [updateCity, setUpdateCity] = useState('');
 
   useEffect(() => {
-    console.log('Operations Useffect', 'success');
+    // console.log('Operations Useffect', 'success');
     // createTable();
-    selectDataHandler();
+    // selectDataHandler();
   }, []);
+
+  const showToastWithGravity = msg => {
+    ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.CENTER);
+  };
 
   const createTable = () => {
     db.transaction(tx => {
@@ -75,7 +76,7 @@ export default function Operations({navigation, route}) {
     const db = SQLite.openDatabase(
       {
         name: 'Store.db',
-       createFromLocation: 1,// '~android/app/src/main/assets/',
+        createFromLocation: 1, // '~android/app/src/main/assets/',
       },
       () => {
         console.log('Operations DB open exists', 'success');
@@ -85,15 +86,24 @@ export default function Operations({navigation, route}) {
       },
     );
 
-    console.log('Operations selectDataHandler', 'click');
+    // console.log('Operations selectDataHandler', 'click');
     db.transaction(tx => {
       tx.executeSql('SELECT City FROM Users', [], (tx, results) => {
         var len = results.rows.length;
         console.log('Operations selectDataHandler len', len);
-        if (len > 0) {
-          // var city = results.rows.item(0).City;
-          setCities(results);
-          console.log('Operations selectDataHandler', results);
+        //   console.log('Operations selectDataHandler results',results.rows.item(0).City);
+        setCities([]); //empty state
+        for (let i = 0; i < len; i++) {
+          console.log(
+            'Operations selectDataHandler results',
+            results.rows.item(i).City,
+          );
+          //get the city
+          var city = results.rows.item(i).City;
+          //spread the hook, add in the new city
+          setCities(cities => {
+            return [...cities, city];
+          });
         }
       });
     });
@@ -114,16 +124,32 @@ export default function Operations({navigation, route}) {
     });
   };
 
-  const removeData = () => {
+  const removeDataHandler = () => {
+    const db = SQLite.openDatabase(
+      {
+        name: 'Store.db',
+        createFromLocation: 1, // '~android/app/src/main/assets/',
+      },
+      () => {
+        console.log('removeDataHandler DB open exists', 'success');
+      },
+      error => {
+        console.log('removeDataHandler DB open error', error);
+      },
+    );
+
+    console.log('Operations removeData', 'trigger');
     db.transaction(tx => {
       tx.executeSql(
         'DELETE FROM Users',
         [],
         () => {
-          // navigation.navigate('SignIn');
+          setCities([]); //empty state
+          showToastWithGravity('Success! All Cities have been deleted');
+          console.log('Success!', 'All Cities have been deleted');
         },
         error => {
-          error;
+          console.log(error);
         },
       );
     });
@@ -144,44 +170,42 @@ export default function Operations({navigation, route}) {
   };
 
   return (
-    <View>
-      <View style={styles.body}>
-        <Section
-          style={styles.sectionTitle}
-          title="Save and view cities to a database"></Section>
+    <SafeAreaView style={styles.container}>
+      <Section
+        style={styles.sectionTitle}
+        title="Save and view cities to a database"></Section>
 
-        <TouchableOpacity
-          onPress={() => selectDataHandler()}
-          style={styles.UpdateButton}>
-          <Text style={styles.UpdateButtonText}>Show Cities</Text>
-        </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => selectDataHandler()}
+        style={styles.UpdateButton}>
+        <Text style={styles.UpdateButtonText}>Show Cities</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => removeDataHandler()}
+        style={styles.DeleteButton}>
+        <Text style={styles.DeleteButtonText}>Delete All Cities</Text>
+      </TouchableOpacity>
 
-        <ScrollView>
-          {cities.map((item, index) => {
-            return (
-              <View>
-                <Text
-                  key={index}
-                  style={[
-                    styles.item,
-                    {marginLeft: 50, alignSelf: 'flex-end'},
-                  ]}>
-                  {item}
-                </Text>
-              </View>
-            );
-          })}
-        </ScrollView>
-      </View>
-    </View>
+      <ScrollView>
+        {cities.map((item, index) => {
+          return (
+            <View>
+              <Text key={index} style={styles.text}>
+                {item}
+              </Text>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: 'bold',
-    margin: 10,
+    margin: 2,
   },
   container: {
     flex: 1,
@@ -197,6 +221,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 5,
   },
   UpdateButtonText: {
     color: '#fff',
@@ -208,6 +233,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'red',
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 5,
   },
   DeleteButtonText: {
     color: '#fff',
@@ -222,66 +248,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-
-//create a table if it doesn't exist Table name = store fileds ID City Date
-// const createDBTable = () => {
-
-//   console.log('Operations createDBTable', 'createDBTable');
-//    db.transaction((tx => {
-//      tx.executeSql(
-//        'CREATE TABLE IF NOT EXISTS Store (Id	INTEGER NOT NULL UNIQUE,	City	TEXT,		PRIMARY KEY(Id AUTOINCREMENT)',
-
-//   const results = 'no data';
-//   try {
-//     const insertQuery =
-//       'INSERT INTO Store (City,Date) VALUES  (Hamilton, Christchurch)';
-//     db.executeSql(insertQuery);
-//     console.log('Insert at create table', insertQuery);
-//     results = db.executeSql('SELECT rowid as id, City FROM Store');
-//   } catch (error) {
-//     console.error('cityitems not inserting ', results);
-//     throw Error('cityitems not inserting');
-//      }
-//    );
-//    });
-// };
-
-// const getCities = db => {
-//   try {
-//     const cityItems = [];
-//     const results = db.executeSql('SELECT rowid as id, City FROM Store');
-//     results.forEach(result => {
-//       for (let index = 0; index < result.rows.length; index++) {
-//         cityItems.push(result.rows.item(index));
-//       }
-//     });
-//     return cityItems;
-//   } catch (error) {
-//     console.error('cityitems not parsing ', error);
-//     throw Error('Failed to get cityItems !!!');
-//   }
-// };
-// //`INSERT INTO store values` + cityItem;
-// //cityItems.map(i => `(${i.id}, '${i.value}')`).join(',');
-// const saveCities = cityItem => {
-//   const insertQuery =
-//     'INSERT INTO Store (City,Date) VALUES  (' + cityItem + ',)';
-//   console.error('Insert', cityItem);
-//   return db.executeSql(insertQuery);
-// };
-
-// async function deleteCity(id) {
-//   const deleteQuery = `DELETE from Store where rowid = ${id}`;
-//   await db.executeSql(deleteQuery);
-// }
-
-//};
-
-//}
-//==============================================
-
-// export function LoadAllCities() {
-//   return countryData;
-// }
-
-// export function DatabaseOperations() {}
