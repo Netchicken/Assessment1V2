@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import SQLite from 'react-native-sqlite-storage';
-SQLite.DEBUG(false);
+//import {DBSelect} from './DBOperations';
+SQLite.DEBUG(true);
 SQLite.enablePromise(false);
 import {
   StyleSheet,
@@ -78,17 +79,21 @@ export default function Operations({navigation, route}) {
         name: 'Store.db',
         createFromLocation: 1, // '~android/app/src/main/assets/',
       },
-      () => {console.log('Operations DB open exists', 'success');},
-      error => {console.log('Operations DB open error', error);
+      () => {
+        console.log('Operations DB open exists', 'success');
+      },
+      error => {
+        console.log('Operations DB open error', error);
       },
     );
 
     // console.log('Operations selectDataHandler', 'click');
     db.transaction(tx => {
       tx.executeSql('SELECT City FROM Users', [], (tx, results) => {
+        //  const results = DBSelect();
         var len = results.rows.length;
         console.log('Operations selectDataHandler len', len);
-      
+
         setCities([]); //empty state
         for (let i = 0; i < len; i++) {
           console.log(

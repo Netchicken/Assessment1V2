@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
 //https://github.com/AdelRedaa97/react-native-select-dropdown/blob/master/examples/demo2.js
 import React, {useState, useEffect, useRef} from 'react';
 import {
@@ -22,6 +15,7 @@ import {
 import {countryDataSmall, createCities} from '../../assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
 import SQLite from 'react-native-sqlite-storage';
+import {OpenDB, DBInsert} from './DBOperations';
 SQLite.DEBUG(false); //hides annoying errors
 SQLite.enablePromise(false);
 
@@ -80,19 +74,30 @@ export default function GamePlay({navigation, route}) {
     ) {
       if (selectedCity == gameData.CapitalName) {
         //you have a winner
-        showToastWithGravity('You win the city is ' + selectedCity);
+       
+ToastAndroid.showWithGravity(
+  'You win the city is ' + selectedCity,
+  ToastAndroid.LONG,
+  ToastAndroid.CENTER,
+);
+
         // pass in the citiescorrect state, spread it,  and pass both to setCitiesCorrect
         setCitiesCorrect(citiesCorrect => {
           return [...citiesCorrect, selectedCity];
         });
       } else {
         // saveCitiesWrong(gameData.CapitalName);
-        showToastWithGravity(
-          'You are wrong the city is ' +
-            gameData.CapitalName +
-            ' you said ' +
-            selectedCity,
-        );
+   
+ToastAndroid.showWithGravity(
+  'You are wrong the city is ' +
+    gameData.CapitalName +
+    ' you said ' +
+    selectedCity,
+  ToastAndroid.LONG,
+  ToastAndroid.CENTER,
+);
+
+
         insertData(); //add word to database
         // pass in the citiesWrong state, spread it,  and pass both to setCitiesWrong
         setCitiesWrong(citiesWrong => {
@@ -104,61 +109,70 @@ export default function GamePlay({navigation, route}) {
 
   //save wrong city to database
   const insertData = async () => {
-    const db = SQLite.openDatabase(
-      {
-        name: 'Store.db',
-        createFromLocation: 1, // '~android/app/src/main/assets/www/Store.db',
-      },
-      () => {
-        console.log('GamePlay DB open exists', 'success');
-      },
-      error => {
-        console.log('GamePlay DB open error', error);
-      },
-    );
+    //open the database ready for operations
+    OpenDB;
+
+    // const db = SQLite.openDatabase(
+    //   {
+    //     name: 'Store.db',
+    //     createFromLocation: 1, // '~android/app/src/main/assets/www/Store.db',
+    //   },
+    //   () => {
+    //     console.log('GamePlay DB open exists', 'success');
+    //   },
+    //   error => {
+    //     console.log('GamePlay DB open error', error);
+    //   },
+    // );
 
     if (selectedCity.length == 0) {
-      showToastWithGravity('Warning! selectedCity is empty');
+      //showToastWithGravity('Warning! selectedCity is empty');
+      ToastAndroid.showWithGravity(
+        'Warning! selectedCity is empty',
+        ToastAndroid.LONG,
+        ToastAndroid.CENTER,
+      );
     } else {
-      try {
-        //  const sqlInsert = console.log('sqlInsert', sqlInsert);
-        db.transaction(tx => {
-          tx.executeSql(
-            'INSERT INTO Users (City) VALUES (?)',
-            [selectedCity], //you must use this structure with executesql not usual sql
-            () => {
-              showToastWithGravityBottom(
-                'Success! ' +
-                  selectedCity +
-                  ' has been updated to the Database.',
-              );
-            },
-            error => {
-              showToastWithGravity(
-                'Sad! ' +
-                  selectedCity +
-                  ' has not been updated in the database.',
-              );
-              console.log(
-                'Saving ' + selectedCity + ' to the db not working',
-                error,
-              );
-            },
-          );
-        });
-      } catch (error) {
-        console.log('Saving the city to the db not working', error);
-      }
+      //try {
+      DBInsert(selectedCity);
+      //  const sqlInsert = console.log('sqlInsert', sqlInsert);
+      //     db.transaction(tx => {
+      //       tx.executeSql(
+      //         'INSERT INTO Users (City) VALUES (?)',
+      //         [selectedCity], //you must use this structure with executesql not usual sql
+      //         () => {
+      //           showToastWithGravityBottom(
+      //             'Success! ' +
+      //               selectedCity +
+      //               ' has been updated to the Database.',
+      //           );
+      //         },
+      //         error => {
+      //           showToastWithGravity(
+      //             'Sad! ' +
+      //               selectedCity +
+      //               ' has not been updated in the database.',
+      //           );
+      //           console.log(
+      //             'Saving ' + selectedCity + ' to the db not working',
+      //             error,
+      //           );
+      //         },
+      //       );
+      //     });
+      // } catch (error) {
+      //   console.log('Saving the city to the db not working', error);
+      // }
     }
   };
 
-  //win lose toast message
-  const showToastWithGravity = msg => {
-    ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.CENTER);
-  };
-  const showToastWithGravityBottom = msg => {
-    ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
-  };
+  //win lose custom toast message
+  // const showToastWithGravity = msg => {
+  //   ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.CENTER);
+  // };
+  // const showToastWithGravityBottom = msg => {
+  //   ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+  // };
 
   //getting the random number to select the current country data
   const GetRandomNUmber = () => {
