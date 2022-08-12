@@ -1,6 +1,7 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {ToastAndroid} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
+import {DBSelect} from './DBOperations';
 //import {DBSelect} from './DBOperations';
 SQLite.DEBUG(true);
 SQLite.enablePromise(false);
@@ -50,28 +51,45 @@ export default function Operations({navigation, route}) {
     // selectDataHandler();
   }, []);
 
-  const createTable = () => {
-    db.transaction(tx => {
-      tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS ' +
-          'Users ' +
-          '(ID INTEGER PRIMARY KEY AUTOINCREMENT, City TEXT);',
-      );
-    });
-    //From DBBrowser creation
-    // CREATE TABLE "Users"(
-    // 	"ID"	INTEGER,
-    // 	"City"	TEXT,
-    // 	PRIMARY KEY("ID" AUTOINCREMENT)
-    // );
-    const fakeCity = 'Fake Hamilton'; //sqlite INSERT INTO Users (City) VALUES ("fakeCity")
-    db.transaction(async tx => {
-      await tx.executeSql('INSERT INTO users (City) VALUES (' + fakeCity + ')');
-    });
-  };
+  // const createTable = () => {
+  //   db.transaction(tx => {
+  //     tx.executeSql(
+  //       'CREATE TABLE IF NOT EXISTS ' +
+  //         'Users ' +
+  //         '(ID INTEGER PRIMARY KEY AUTOINCREMENT, City TEXT);',
+  //     );
+  //   });
+  //   //From DBBrowser creation
+  //   // CREATE TABLE "Users"(
+  //   // 	"ID"	INTEGER,
+  //   // 	"City"	TEXT,
+  //   // 	PRIMARY KEY("ID" AUTOINCREMENT)
+  //   // );
+  //   const fakeCity = 'Fake Hamilton'; //sqlite INSERT INTO Users (City) VALUES ("fakeCity")
+  //   db.transaction(async tx => {
+  //     await tx.executeSql('INSERT INTO users (City) VALUES (' + fakeCity + ')');
+  //   });
+  // };
 
   //SHOW CITIES HANDLER
   const selectDataHandler = () => {
+    // var results = DBSelect();
+
+    // ToastAndroid.showWithGravity(
+    //   'selectDataHandler count of results = ' + results + '',
+    //   ToastAndroid.LONG,
+    //   ToastAndroid.CENTER,
+    // );
+    // var len = results.count;
+
+    // setCities([]); //empty state
+    // for (let i = 0; i < len; i++) {
+    //   var city = results.rows.item(i).City;
+    //   //spread the hook, add in the new city
+    //   setCities(cities => {
+    //     return [...cities.reverse(), city];
+    //   });
+    // }
     ToastAndroid.showWithGravity(
       'Show cities triggered',
       ToastAndroid.LONG,
@@ -98,10 +116,9 @@ export default function Operations({navigation, route}) {
       },
     );
 
-    // console.log('Operations selectDataHandler', 'click');
+    // // console.log('Operations selectDataHandler', 'click');
     db.transaction(tx => {
       tx.executeSql('SELECT City FROM Users', [], (tx, results) => {
-        //  const results = DBSelect();
         var len = results.rows.length;
         console.log('Operations selectDataHandler len', len);
 
@@ -113,11 +130,6 @@ export default function Operations({navigation, route}) {
 
         setCities([]); //empty state
         for (let i = 0; i < len; i++) {
-          console.log(
-            'Operations selectDataHandler results',
-            results.rows.item(i).City,
-          );
-          //get the city
           var city = results.rows.item(i).City;
           //spread the hook, add in the new city
           setCities(cities => {

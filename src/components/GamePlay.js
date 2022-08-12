@@ -74,12 +74,12 @@ export default function GamePlay({navigation, route}) {
     ) {
       if (selectedCity == gameData.CapitalName) {
         //you have a winner
-       
-ToastAndroid.showWithGravity(
-  'You win the city is ' + selectedCity,
-  ToastAndroid.LONG,
-  ToastAndroid.CENTER,
-);
+
+        ToastAndroid.showWithGravity(
+          'You win the city is ' + selectedCity,
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
 
         // pass in the citiescorrect state, spread it,  and pass both to setCitiesCorrect
         setCitiesCorrect(citiesCorrect => {
@@ -87,21 +87,20 @@ ToastAndroid.showWithGravity(
         });
       } else {
         // saveCitiesWrong(gameData.CapitalName);
-   
-ToastAndroid.showWithGravity(
-  'You are wrong the city is ' +
-    gameData.CapitalName +
-    ' you said ' +
-    selectedCity,
-  ToastAndroid.LONG,
-  ToastAndroid.CENTER,
-);
 
+        ToastAndroid.showWithGravity(
+          'You are wrong the city is ' +
+            gameData.CapitalName +
+            ' you said ' +
+            selectedCity,
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
 
         insertData(); //add word to database
         // pass in the citiesWrong state, spread it,  and pass both to setCitiesWrong
         setCitiesWrong(citiesWrong => {
-          return [...citiesWrong, selectedCity];
+          return [...citiesWrong.reverse(), selectedCity];
         });
       }
     }
@@ -111,19 +110,6 @@ ToastAndroid.showWithGravity(
   const insertData = async () => {
     //open the database ready for operations
     OpenDB;
-
-    // const db = SQLite.openDatabase(
-    //   {
-    //     name: 'Store.db',
-    //     createFromLocation: 1, // '~android/app/src/main/assets/www/Store.db',
-    //   },
-    //   () => {
-    //     console.log('GamePlay DB open exists', 'success');
-    //   },
-    //   error => {
-    //     console.log('GamePlay DB open error', error);
-    //   },
-    // );
 
     if (selectedCity.length == 0) {
       //showToastWithGravity('Warning! selectedCity is empty');
@@ -265,7 +251,7 @@ ToastAndroid.showWithGravity(
         }}
       />
 
-      <Button title="Submit your answer" onPress={onClickSubmit}></Button>
+      {/* <Button title="Submit your answer" onPress={onClickSubmit}></Button> */}
       <View
         style={[
           styles.container,
