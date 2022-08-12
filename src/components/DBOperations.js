@@ -23,14 +23,14 @@ export const createOpenDB = () => {
   );
 };
 
-export const DBInsert = ({selectedCity}) => {
+export const DBInsert = (selectedCity) => {
   ToastAndroid.showWithGravity(
     'DBINsert! ' + selectedCity,
     ToastAndroid.LONG,
     ToastAndroid.CENTER,
   );
 
-  db = SQLite.openDatabase({name: 'Store.db', location: 'default'});
+  var db = SQLite.openDatabase({name: 'Store.db', location: 'default'});
   if (selectedCity.length == 0) {
     ToastAndroid.showWithGravity(
       'Warning! selectedCity is empty',

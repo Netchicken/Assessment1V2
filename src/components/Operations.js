@@ -1,4 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
+import {ToastAndroid} from 'react-native';
 import SQLite from 'react-native-sqlite-storage';
 //import {DBSelect} from './DBOperations';
 SQLite.DEBUG(true);
@@ -49,10 +50,6 @@ export default function Operations({navigation, route}) {
     // selectDataHandler();
   }, []);
 
-  const showToastWithGravity = msg => {
-    ToastAndroid.showWithGravity(msg, ToastAndroid.LONG, ToastAndroid.CENTER);
-  };
-
   const createTable = () => {
     db.transaction(tx => {
       tx.executeSql(
@@ -73,17 +70,31 @@ export default function Operations({navigation, route}) {
     });
   };
 
+  //SHOW CITIES HANDLER
   const selectDataHandler = () => {
+    ToastAndroid.showWithGravity(
+      'Show cities triggered',
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+    );
     const db = SQLite.openDatabase(
       {
         name: 'Store.db',
         createFromLocation: 1, // '~android/app/src/main/assets/',
       },
       () => {
-        console.log('Operations DB open exists', 'success');
+        ToastAndroid.showWithGravity(
+          'Operations DB open exists',
+          ToastAndroid.SHORT,
+          ToastAndroid.CENTER,
+        );
       },
       error => {
-        console.log('Operations DB open error', error);
+        ToastAndroid.showWithGravity(
+          'Operations DB open error',
+          ToastAndroid.LONG,
+          ToastAndroid.CENTER,
+        );
       },
     );
 
@@ -93,6 +104,12 @@ export default function Operations({navigation, route}) {
         //  const results = DBSelect();
         var len = results.rows.length;
         console.log('Operations selectDataHandler len', len);
+
+        ToastAndroid.showWithGravity(
+          'SELECT City FROM Users - ' + len,
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
 
         setCities([]); //empty state
         for (let i = 0; i < len; i++) {
@@ -125,8 +142,13 @@ export default function Operations({navigation, route}) {
       );
     });
   };
-
+  //DELETE ALL CITIES HANDLER
   const removeDataHandler = () => {
+    ToastAndroid.showWithGravity(
+      'Delete all cities triggered',
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+    );
     const db = SQLite.openDatabase(
       {
         name: 'Store.db',
@@ -147,7 +169,12 @@ export default function Operations({navigation, route}) {
         [],
         () => {
           setCities([]); //empty state
-          showToastWithGravity('Success! All Cities have been deleted');
+
+          ToastAndroid.showWithGravity(
+            'Success! All Cities have been deleted',
+            ToastAndroid.LONG,
+            ToastAndroid.CENTER,
+          );
           console.log('Success!', 'All Cities have been deleted');
         },
         error => {
