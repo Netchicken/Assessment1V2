@@ -55,18 +55,18 @@ const App = () => {
           tabBarIcon: ({focused, size, color}) => {
             let iconName;
             // console.log('App route', route.name);
-            if (route.name === 'Guess_Cities') {
+            if (route.name === 'Guess the City') {
               iconName = 'city';
               size = focused ? 25 : 20;
-              color = focused ? '#f0f' : '#555';
-            } else if (route.name === 'Database') {
+              color = focused ? '#d42920' : '#555';
+            } else if (route.name === 'Wrong City Database') {
               iconName = 'building';
               size = focused ? 25 : 20;
-              color = focused ? '#f0f' : '#555';
-            } else if (route.name === 'Weather') {
-              iconName = 'sun';
+              color = focused ? '#09de30' : '#555';
+            } else if (route.name === 'City Weather') {
+              iconName = 'cloud-sun';
               size = focused ? 25 : 20;
-              color = focused ? '#f0f' : '#555';
+              color = focused ? '#fcba03' : '#555';
             }
             return <FontAwesome5 name={iconName} size={size} color={color} />;
           },
@@ -84,9 +84,9 @@ const App = () => {
         inactiveColor="#3e2465"
         // barStyle={{ backgroundColor: '#694fad' }}
       >
-        <Tab.Screen name="Guess_Cities" component={GamePlay} />
-        <Tab.Screen name="Database" component={Operations} />
-        <Tab.Screen name="Weather" component={Api} />
+        <Tab.Screen name="Guess the City" component={GamePlay} />
+        <Tab.Screen name="Wrong City Database" component={Operations} />
+        <Tab.Screen name="City Weather" component={Api} />
       </Tab.Navigator>
     </NavigationContainer>
     // component is where you go to, name is used in navigation

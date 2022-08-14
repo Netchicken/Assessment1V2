@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {SafeAreaView, StyleSheet, Text, View, FlatList} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View, ToastAndroid} from 'react-native';
 
 import {createCities} from '../../assets/citiesSmall';
 import SelectDropdown from 'react-native-select-dropdown';
@@ -8,7 +8,8 @@ export default function Api({navigation, route}) {
   //https://home.openweathermap.org/
   //3f2e5dbaf5cf57927bf90f6b1acf3206   api key
   //https://openweathermap.org/current
-  const [selectedCity, setSelectedCity] = useState(null); //selected city
+
+  const [selectedCity, setSelectedCity] = useState(route.params); //selected city
   const [allCities, setAllCities] = useState(createCities()); //dropdown data
   const citiesDropdownRef = useRef({});
   const [cityTemp, setCityTemp] = useState(null); //selected city
@@ -33,6 +34,11 @@ export default function Api({navigation, route}) {
 
   useEffect(() => {
     getWeatherFromApi();
+    ToastAndroid.showWithGravity(
+      selectedCity,
+      ToastAndroid.LONG,
+      ToastAndroid.CENTER,
+    );
   }, [selectedCity]);
 
   const getWeatherFromApi = async () => {

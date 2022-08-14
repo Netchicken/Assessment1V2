@@ -210,14 +210,14 @@ export default function GamePlay({navigation, route}) {
     return (
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>{title}</Text>
-        <Text>
-          the city is {gameData.CapitalName ? gameData.CapitalName : ''}
+        <Text style={styles.textSmall}>
+         The city is {gameData.CapitalName ? gameData.CapitalName : ''}
         </Text>
         <Text>
-          the Country is {gameData.CountryName ? gameData.CountryName : ''}
+          The Country is {gameData.CountryName ? gameData.CountryName : ''}
         </Text>
         <Text>
-          the Continent is{' '}
+          The Continent is{' '}
           {gameData.ContinentName ? gameData.ContinentName : ''}
         </Text>
       </View>
@@ -237,7 +237,7 @@ export default function GamePlay({navigation, route}) {
         onSelect={(selectedItem, index) => {
           setSelectedCity(selectedItem);
         }}
-        defaultButtonText={'Select city'}
+        defaultButtonText={'Choose the city'}
         buttonTextAfterSelection={(selectedItem, index) => {
           //https://www.npmjs.com/package/react-native-select-dropdown
           // text represented after item is selected
@@ -350,5 +350,9 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     margin: 10,
+  },
+  textSmall: {
+    fontSize: 10,
+        margin: 5,
   },
 });
